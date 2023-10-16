@@ -14,7 +14,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@event-valle/api": ["packages/api/src/index.ts"],
+      "@eventvalle/api/shared/exceptions": [
+        "packages/api/shared/exceptions/src/index.ts"
+      ],
+      "@eventvalle/api/shared/utils-email-templates": [
+        "packages/api/shared/utils-email-templates/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

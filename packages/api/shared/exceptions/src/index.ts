@@ -1,0 +1,5 @@
+export { ApiError } from './lib/api.error'
+export type { ApiErrorParams } from './lib/api.error'
+export { DatabaseError } from './lib/database.error'
+export type { ApiErrorType } from './lib/types/api-error-codes'
+export type { BaseApiError, BaseApiErrorResponse } from './lib/types/base-api.error'

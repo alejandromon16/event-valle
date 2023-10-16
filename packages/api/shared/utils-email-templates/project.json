@@ -1,0 +1,44 @@
+{
+  "name": "api-shared-utils-email-templates",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/api/shared/utils-email-templates/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/api/shared/utils-email-templates",
+        "tsConfig": "packages/api/shared/utils-email-templates/tsconfig.lib.json",
+        "packageJson": "packages/api/shared/utils-email-templates/package.json",
+        "main": "packages/api/shared/utils-email-templates/src/index.ts",
+        "assets": ["packages/api/shared/utils-email-templates/*.md", "packages/api/shared/utils-email-templates/src/templates/**/*"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/api/shared/utils-email-templates/**/*.ts",
+          "packages/api/shared/utils-email-templates/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/api/shared/utils-email-templates/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

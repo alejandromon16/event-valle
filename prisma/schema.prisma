@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  ADMIN
+  CONTENT_APPROVER
+  CONTENT_PUBLISHER
+  REQUEST_APPROVER
+  CONTENT_VISULIZER
+  USER
+}
+
+model User {
+  id                 String               @id @default(uuid())
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  name               String
+  last_name          String
+  phone_number       String?
+  user_name          String               @unique
+  email              String               @unique
+  password           String
+  UserRole           UserRole[]
+  approvedRequested  EventRequest[]       @relation("approvedBy")
+  eventsRequested    EventRequest[]       @relation("requestedBy")
+  PasswordResetToken PasswordResetToken[]
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  name        RoleType   @default(USER)
+  description String
+  users       UserRole[]
+}
+
+model PasswordResetToken {
+  id              Int      @id @default(autoincrement())
+  token           String
+  expiration_date DateTime
+  deactivated     Boolean  @default(false)
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+}
+
+enum EventRequestStatus {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+model EventRequest {
+  id            String             @id @default(uuid())
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  requestedById String
+  requestedBy   User               @relation(name: "requestedBy", fields: [requestedById], references: [id])
+  approvedById  String
+  approvedBy    User               @relation(name: "approvedBy", fields: [approvedById], references: [id])
+  status        EventRequestStatus @default(PENDING)
+}
+
+model Event {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  title          String
+  description    String
+  principalImage String
+  thumbnail      String
+  images         String[]
+
+  published Boolean @default(false)
+}
