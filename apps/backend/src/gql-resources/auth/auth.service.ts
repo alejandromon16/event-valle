@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ApiError } from '@eventvalle/api/shared/exceptions'
-import { HttpStatus, Injectable, NotFoundException, Res } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { compare } from 'bcrypt'
 import { randomBytes } from 'crypto'
 import { DateTime } from 'luxon'
@@ -13,9 +13,7 @@ import { ValidatePasswordResetTokenInput } from './dto/validate-password-reset-t
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { RequestPasswordResetEvent } from './events/request-password-reset.event'
 import { AUTH_EVENTS } from './constants/event.constants'
-import { JwtService } from '@nestjs/jwt'
 import { EmailService } from '../../common/services'
-import { jwtConstants } from './constants/jwt.constants'
 import { UserEntity } from '../users/entities/user.entity'
 import { Response } from 'express'
 
@@ -25,29 +23,11 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
     private readonly userService: UsersService,
-    private readonly jwtService: JwtService,
     private readonly eventEmitter: EventEmitter2
   ) {}
 
   async login(loginInput: LoginInput) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: loginInput.email?.toLowerCase() },
-    })
-
-    if (!user)
-      throw new ApiError(`User ${loginInput.email} not found`, {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        type: 'authenticate_error',
-      })
-
-    const matchingPassword = await compare(loginInput.password, user.password)
-
-    if (!matchingPassword)
-      throw new ApiError(`Invalid password please try again`, {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        type: 'authenticate_error',
-      })
-
+    const user = await this.validateUser(loginInput.email, loginInput.password);
     return user
   }
 
@@ -126,16 +106,26 @@ export class AuthService {
     return token
   }
 
-  async validateUser(userId: string): Promise<UserEntity | null> {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-      });
+  async validateUser(email: string, password: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email?.toLowerCase() },
+    })
 
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+    if (!user)
+      throw new ApiError(`User ${email} not found`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+      })
 
-      return user;
+    const matchingPassword = await compare(password, user.password)
+
+    if (!matchingPassword)
+      throw new ApiError(`Invalid password please try again`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+      })
+
+    return user;
   }
 
   async resetPasswordWithToken(resetPasswordInput: ResetPasswordInput) {
@@ -165,16 +155,6 @@ export class AuthService {
     return user
   }
 
-  async generateToken(userId: string) {
-    return this.jwtService.sign({ sub: userId }, { expiresIn: jwtConstants.expiresIn });
-  }
-
-  setJwtCookie(response: Response, token: string) {
-    response.cookie('Authentication', token, {
-      httpOnly: true,
-      maxAge: Number(jwtConstants.expiresIn) * 1000,
-    });
-  }
 
   logout(response: Response) {
     response.cookie('Authentication', '', {

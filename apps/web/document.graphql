@@ -1,0 +1,26 @@
+query GetUsers {
+  listUsers {
+    id
+    email
+    createdAt
+    name
+    password
+    updatedAt
+  }
+}
+
+mutation Login($input:LoginInput!){
+  login(loginInput: $input){
+    id
+    name
+    user_name
+    email
+    last_name
+  }
+}
+
+query Me {
+  me {
+    status
+  }
+}

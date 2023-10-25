@@ -8,18 +8,20 @@ import { ResetPasswordInput } from './dto/reset-password.input'
 import { ValidatePasswordResetTokenInput } from './dto/validate-password-reset-token.input'
 import { LogoutEntity } from './entities/auth.entity'
 import { ValidatePasswordResetTokenEntity } from './entities/validate-password-reset-token.entity'
-import { LocalAuthGuard } from './guards/local-auth.guard'
 import { Request } from 'express'
-import { AuthenticatedGuard, Protected } from './guards/authenticated.guard'
-import { GqlAuthGuard } from './guards/graphql-auth.guard'
+import { SessionLocalAuthGuard } from './guards/local-auth.guard'
+import { GQLAuthGuard } from './guards/gql-auth.guard'
+import { IsAuthenticated } from './guards/authenticated.guard'
+
 
 @Resolver(() => UserEntity)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(GqlAuthGuard, LocalAuthGuard)
   @Mutation(() => UserEntity)
-  async login(@Args('loginInput') loginInput: LoginInput ) {
+  @UseGuards(GQLAuthGuard, SessionLocalAuthGuard)
+  async login(@Args('loginInput') loginInput: LoginInput, @Context('req') request: any) {
+    console.log('mutation',request.session)
     const user = await this.authService.login(loginInput)
     return user
   }
@@ -52,18 +54,20 @@ export class AuthResolver {
     return result
   }
 
-  @Protected()
   @Query(() => LogoutEntity)
+  @UseGuards(IsAuthenticated)
   async logout(@Context('req') request: Request) {
     request.session.destroy(console.error)
 
     return { status: 'Success' }
   }
 
-  @Query(() => UserEntity)
-  @UseGuards(AuthenticatedGuard)
+  @Query(() => LogoutEntity)
+  @UseGuards(IsAuthenticated)
   async me(@Context('req') request: Request) {
-    return request.user
+    return {
+      status: `req.Session ID ${request.user}`
+    }
   }
 }
 

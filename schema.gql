@@ -43,7 +43,7 @@ type Mutation {
 type Query {
   listUsers: [UserEntity!]!
   logout: LogoutEntity!
-  me: UserEntity!
+  me: LogoutEntity!
   retrieveUser(id: String!): UserEntity!
 }
 
