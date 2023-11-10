@@ -1,8 +1,10 @@
 import { create } from "zustand"
 import { persist, devtools } from "zustand/middleware"
-import { UserEntity } from "../../types"
+import { RoleType, UserEntity } from "../../types"
 
-export interface User extends Omit<UserEntity, "password" | "createdAt"> {
+export interface User {
+  id: string
+  roles: RoleType[]
 }
 
 export interface UserActions {
@@ -15,15 +17,11 @@ export const useUserStore = create<User & UserActions>()(
     persist(
       (set) => ({
         id: "",
-        user_name: "",
-        email: "",
-        last_name: "",
-        name: "",
-        phone_number: "",
+        roles: [],
 
         setUser: (user) => set(user),
         logout: () => {
-          set({ id: "", user_name: "", email: "", name: "", last_name: "", phone_number:"",})
+          set({ id: "", roles: []})
         },
       }),
       {

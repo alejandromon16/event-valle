@@ -1,35 +1,24 @@
-import '@/styles/globals.css'
+import type { ReactElement, ReactNode } from 'react'
+import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
-import { ApolloProvider } from '@apollo/client';
-import client from '@/config/apollo-client';
-import { ChakraProvider, extendTheme, Heading, Text } from '@chakra-ui/react'
-import { CacheProvider } from '@chakra-ui/next-js'
-import { useAuthStore } from '@/stores/authStore';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import '@fontsource/fira-sans';
+import { ChakraProvider } from '@chakra-ui/react'
 
-export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticate)
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
 
-  useEffect(() => {
-    if(!isAuthenticated){
-      router.push('/');
-    }
-  },[isAuthenticated])
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
 
-  const customTheme = extendTheme({
-    
-  });
+export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout ?? ((page) => page)
 
-  return (
-    <ApolloProvider client={client}>
-      <CacheProvider>
-        <ChakraProvider theme={customTheme}>
-          <Component />
-        </ChakraProvider>
-      </CacheProvider>
-    </ApolloProvider>
+  return getLayout(
+    <Apol
+    <ChakraProvider>
+      <Component {...pageProps} />
+    </ChakraProvider>
   )
 }

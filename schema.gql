@@ -2,6 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AssignRolesToUserInput {
+  roles: [RoleType!]!
+  userId: String!
+}
+
+input CreateRequestEventInput {
+  createdAt: String
+  requestedById: String!
+  title: String!
+}
+
+input CreateRoleInput {
+  description: String!
+  name: RoleType!
+}
+
 input CreateUserInput {
   createdAt: Int
   email: String!
@@ -17,6 +33,10 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input FindRoleByNameInput {
+  name: RoleType!
+}
+
 """Login user input"""
 input LoginInput {
   """Email of the user"""
@@ -30,7 +50,15 @@ type LogoutEntity {
   status: String!
 }
 
+type MeEntity {
+  roles: [RoleEntity!]!
+  userId: String!
+}
+
 type Mutation {
+  assignRolesToUser(assignRolesToUser: AssignRolesToUserInput!): UserEntity!
+  createRequestEvent(createRequestEventInput: CreateRequestEventInput!): RequestEventEntity!
+  createRole(createRoleInput: CreateRoleInput!): RoleEntity!
   createUser(createUserInput: CreateUserInput!): UserEntity!
   login(loginInput: LoginInput!): UserEntity!
   removeUser(id: String!): UserEntity!
@@ -41,10 +69,29 @@ type Mutation {
 }
 
 type Query {
+  findRoleByName(findRoleByName: FindRoleByNameInput!): RoleEntity!
+  getListOfRequestsEvents: [RequestEventEntity!]!
   listUsers: [UserEntity!]!
   logout: LogoutEntity!
-  me: LogoutEntity!
+  me: MeEntity!
   retrieveUser(id: String!): UserEntity!
+  rolesList: [RoleEntity!]!
+}
+
+type RequestEventEntity {
+  createdAt: String
+  id: String!
+  requestedBy: UserEntity
+  status: RequestEventStatus!
+  title: String!
+  updatedAt: String
+}
+
+"""Possible status for request event"""
+enum RequestEventStatus {
+  APPROVED
+  PENDING
+  REJECTED
 }
 
 """Reset password input"""
@@ -61,6 +108,24 @@ input ResetPasswordInput {
   """Password reset token to validate"""
   token: String!
   userId: String!
+}
+
+type RoleEntity {
+  description: String!
+  id: String!
+  name: RoleType!
+  users: [UserEntity!]!
+}
+
+"""Possible roles for a user"""
+enum RoleType {
+  ADMIN
+  CONTENT_APPROVER
+  CONTENT_PUBLISHER
+  CONTENT_VISULIZER
+  REQUEST_APPROVER
+  SUPER_ADMIN
+  USER
 }
 
 input UpdateUserInput {
@@ -82,6 +147,7 @@ type UserEntity {
   name: String!
   password: String
   phone_number: String
+  roles: [RoleEntity!]!
   updatedAt: String
   user_name: String!
 }

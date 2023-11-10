@@ -22,7 +22,7 @@ services:
     command: redis-server --save '' --appendonly no --loglevel warning --protected-mode no
     volumes:
       - cache:/data
-  
+
 volumes:
   db:
     driver: local

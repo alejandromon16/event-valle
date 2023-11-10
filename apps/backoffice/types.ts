@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -7,7 +8,14 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-const defaultOptions = {} as const;
+
+function fetcher<TData, TVariables extends { [key: string]: any }>(client: GraphQLClient, query: string, variables?: TVariables, requestHeaders?: RequestInit['headers']) {
+  return async (): Promise<TData> => client.request({
+    document: query,
+    variables,
+    requestHeaders
+  });
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -18,6 +26,22 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type AssignRolesToUserInput = {
+  roles: Array<RoleType>;
+  userId: Scalars['String']['input'];
+};
+
+export type CreateRequestEventInput = {
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  requestedById: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateRoleInput = {
+  description: Scalars['String']['input'];
+  name: RoleType;
+};
+
 export type CreateUserInput = {
   createdAt?: InputMaybe<Scalars['Int']['input']>;
   email: Scalars['String']['input'];
@@ -26,6 +50,10 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
   phone_number?: InputMaybe<Scalars['String']['input']>;
   user_name: Scalars['String']['input'];
+};
+
+export type FindRoleByNameInput = {
+  name: RoleType;
 };
 
 /** Login user input */
@@ -41,8 +69,17 @@ export type LogoutEntity = {
   status: Scalars['String']['output'];
 };
 
+export type MeEntity = {
+  __typename?: 'MeEntity';
+  roles: Array<RoleEntity>;
+  userId: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  assignRolesToUser: UserEntity;
+  createRequestEvent: RequestEventEntity;
+  createRole: RoleEntity;
   createUser: UserEntity;
   login: UserEntity;
   removeUser: UserEntity;
@@ -50,6 +87,21 @@ export type Mutation = {
   resetPassword: UserEntity;
   updateUser: UserEntity;
   validatePasswordResetToken: ValidatePasswordResetTokenEntity;
+};
+
+
+export type MutationAssignRolesToUserArgs = {
+  assignRolesToUser: AssignRolesToUserInput;
+};
+
+
+export type MutationCreateRequestEventArgs = {
+  createRequestEventInput: CreateRequestEventInput;
+};
+
+
+export type MutationCreateRoleArgs = {
+  createRoleInput: CreateRoleInput;
 };
 
 
@@ -89,16 +141,41 @@ export type MutationValidatePasswordResetTokenArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  findRoleByName: RoleEntity;
+  getListOfRequestsEvents: Array<RequestEventEntity>;
   listUsers: Array<UserEntity>;
   logout: LogoutEntity;
-  me: LogoutEntity;
+  me: MeEntity;
   retrieveUser: UserEntity;
+  rolesList: Array<RoleEntity>;
+};
+
+
+export type QueryFindRoleByNameArgs = {
+  findRoleByName: FindRoleByNameInput;
 };
 
 
 export type QueryRetrieveUserArgs = {
   id: Scalars['String']['input'];
 };
+
+export type RequestEventEntity = {
+  __typename?: 'RequestEventEntity';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  requestedBy?: Maybe<UserEntity>;
+  status: RequestEventStatus;
+  title: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+};
+
+/** Possible status for request event */
+export enum RequestEventStatus {
+  Approved = 'APPROVED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
 
 /** Reset password input */
 export type RequestPasswordResetInput = {
@@ -114,6 +191,25 @@ export type ResetPasswordInput = {
   token: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
+
+export type RoleEntity = {
+  __typename?: 'RoleEntity';
+  description: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  name: RoleType;
+  users: Array<UserEntity>;
+};
+
+/** Possible roles for a user */
+export enum RoleType {
+  Admin = 'ADMIN',
+  ContentApprover = 'CONTENT_APPROVER',
+  ContentPublisher = 'CONTENT_PUBLISHER',
+  ContentVisulizer = 'CONTENT_VISULIZER',
+  RequestApprover = 'REQUEST_APPROVER',
+  SuperAdmin = 'SUPER_ADMIN',
+  User = 'USER'
+}
 
 export type UpdateUserInput = {
   createdAt?: InputMaybe<Scalars['Int']['input']>;
@@ -135,6 +231,7 @@ export type UserEntity = {
   name: Scalars['String']['output'];
   password?: Maybe<Scalars['String']['output']>;
   phone_number?: Maybe<Scalars['String']['output']>;
+  roles: Array<RoleEntity>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   user_name: Scalars['String']['output'];
 };
@@ -155,61 +252,140 @@ export type ValidatePasswordResetTokenInput = {
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', listUsers: Array<{ __typename?: 'UserEntity', id: string, email: string, createdAt?: string | null, name: string, password?: string | null, updatedAt?: string | null }> };
+export type GetUsersQuery = { __typename?: 'Query', listUsers: Array<{ __typename?: 'UserEntity', id: string, email: string, createdAt?: string | null, name: string, password?: string | null, updatedAt?: string | null, roles: Array<{ __typename?: 'RoleEntity', name: RoleType, id: string }> }> };
+
+export type GetListOfRequestsEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetListOfRequestsEventsQuery = { __typename?: 'Query', getListOfRequestsEvents: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
+
+export type LogoutQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutQuery = { __typename?: 'Query', logout: { __typename?: 'LogoutEntity', status: string } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: string, name: string, user_name: string, email: string, last_name: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: string, name: string, user_name: string, email: string, last_name: string, roles: Array<{ __typename?: 'RoleEntity', name: RoleType }> } };
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'LogoutEntity', status: string } };
+export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const GetUsersDocument = gql`
+export type GetMeQuery = { __typename?: 'Query', me: { __typename?: 'MeEntity', userId: string, roles: Array<{ __typename?: 'RoleEntity', name: RoleType }> } };
+
+export type CreateUserMutationVariables = Exact<{
+  input: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserEntity', id: string, email: string, last_name: string, name: string, phone_number?: string | null, user_name: string } };
+
+export type CreateRequestEventMutationVariables = Exact<{
+  input: CreateRequestEventInput;
+}>;
+
+
+export type CreateRequestEventMutation = { __typename?: 'Mutation', createRequestEvent: { __typename?: 'RequestEventEntity', id: string, createdAt?: string | null, status: RequestEventStatus, title: string } };
+
+export type RolesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RolesListQuery = { __typename?: 'Query', rolesList: Array<{ __typename?: 'RoleEntity', id: string, name: RoleType, description: string, users: Array<{ __typename?: 'UserEntity', id: string, name: string }> }> };
+
+
+
+export const GetUsersDocument = `
     query GetUsers {
   listUsers {
     id
     email
     createdAt
     name
+    roles {
+      name
+      id
+    }
     password
     updatedAt
   }
 }
     `;
 
-/**
- * __useGetUsersQuery__
- *
- * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetUsersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
-      }
-export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
-        }
-export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
-export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
-export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
-export const LoginDocument = gql`
+export const useGetUsersQuery = <
+      TData = GetUsersQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetUsersQueryVariables,
+      options?: UseQueryOptions<GetUsersQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetUsersQuery, TError, TData>(
+      variables === undefined ? ['GetUsers'] : ['GetUsers', variables],
+      fetcher<GetUsersQuery, GetUsersQueryVariables>(client, GetUsersDocument, variables, headers),
+      options
+    )};
+
+export const GetListOfRequestsEventsDocument = `
+    query GetListOfRequestsEvents {
+  getListOfRequestsEvents {
+    id
+    status
+    title
+    requestedBy {
+      id
+      name
+      user_name
+    }
+  }
+}
+    `;
+
+export const useGetListOfRequestsEventsQuery = <
+      TData = GetListOfRequestsEventsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetListOfRequestsEventsQueryVariables,
+      options?: UseQueryOptions<GetListOfRequestsEventsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetListOfRequestsEventsQuery, TError, TData>(
+      variables === undefined ? ['GetListOfRequestsEvents'] : ['GetListOfRequestsEvents', variables],
+      fetcher<GetListOfRequestsEventsQuery, GetListOfRequestsEventsQueryVariables>(client, GetListOfRequestsEventsDocument, variables, headers),
+      options
+    )};
+
+export const LogoutDocument = `
+    query Logout {
+  logout {
+    status
+  }
+}
+    `;
+
+export const useLogoutQuery = <
+      TData = LogoutQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: LogoutQueryVariables,
+      options?: UseQueryOptions<LogoutQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<LogoutQuery, TError, TData>(
+      variables === undefined ? ['Logout'] : ['Logout', variables],
+      fetcher<LogoutQuery, LogoutQueryVariables>(client, LogoutDocument, variables, headers),
+      options
+    )};
+
+export const LoginDocument = `
     mutation Login($input: LoginInput!) {
   login(loginInput: $input) {
     id
@@ -217,66 +393,135 @@ export const LoginDocument = gql`
     user_name
     email
     last_name
+    roles {
+      name
+    }
   }
 }
     `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const MeDocument = gql`
-    query Me {
+export const useLoginMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
+      ['Login'],
+      (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(client, LoginDocument, variables, headers)(),
+      options
+    )};
+
+export const GetMeDocument = `
+    query getMe {
   me {
-    status
+    userId
+    roles {
+      name
+    }
   }
 }
     `;
 
-/**
- * __useMeQuery__
- *
- * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-      }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
-export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
-export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const useGetMeQuery = <
+      TData = GetMeQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetMeQueryVariables,
+      options?: UseQueryOptions<GetMeQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetMeQuery, TError, TData>(
+      variables === undefined ? ['getMe'] : ['getMe', variables],
+      fetcher<GetMeQuery, GetMeQueryVariables>(client, GetMeDocument, variables, headers),
+      options
+    )};
+
+export const CreateUserDocument = `
+    mutation CreateUser($input: CreateUserInput!) {
+  createUser(createUserInput: $input) {
+    id
+    email
+    last_name
+    name
+    phone_number
+    user_name
+  }
+}
+    `;
+
+export const useCreateUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateUserMutation, TError, CreateUserMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<CreateUserMutation, TError, CreateUserMutationVariables, TContext>(
+      ['CreateUser'],
+      (variables?: CreateUserMutationVariables) => fetcher<CreateUserMutation, CreateUserMutationVariables>(client, CreateUserDocument, variables, headers)(),
+      options
+    )};
+
+export const CreateRequestEventDocument = `
+    mutation CreateRequestEvent($input: CreateRequestEventInput!) {
+  createRequestEvent(createRequestEventInput: $input) {
+    id
+    createdAt
+    status
+    title
+  }
+}
+    `;
+
+export const useCreateRequestEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateRequestEventMutation, TError, CreateRequestEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<CreateRequestEventMutation, TError, CreateRequestEventMutationVariables, TContext>(
+      ['CreateRequestEvent'],
+      (variables?: CreateRequestEventMutationVariables) => fetcher<CreateRequestEventMutation, CreateRequestEventMutationVariables>(client, CreateRequestEventDocument, variables, headers)(),
+      options
+    )};
+
+export const RolesListDocument = `
+    query RolesList {
+  rolesList {
+    id
+    name
+    description
+    users {
+      id
+      name
+    }
+  }
+}
+    `;
+
+export const useRolesListQuery = <
+      TData = RolesListQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: RolesListQueryVariables,
+      options?: UseQueryOptions<RolesListQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<RolesListQuery, TError, TData>(
+      variables === undefined ? ['RolesList'] : ['RolesList', variables],
+      fetcher<RolesListQuery, RolesListQueryVariables>(client, RolesListDocument, variables, headers),
+      options
+    )};

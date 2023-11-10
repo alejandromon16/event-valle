@@ -1,11 +1,11 @@
+'use client'
+import { Box } from '@chakra-ui/react'
 import React from 'react'
 
-const Page: React.FC= () => {
+function page() {
   return (
-    <div>
-      <h1>soy ale</h1>
-    </div>
+    <div>hola</div>
   )
 }
 
-export default Page
+export default page

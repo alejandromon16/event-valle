@@ -2,11 +2,12 @@ import {
   Field,
   ObjectType,
 } from '@nestjs/graphql'
-import { User } from '@prisma/client'
+import { Role } from '@prisma/client'
+import { RoleEntity } from '../../roles/entities/rol.entity'
 
 
 @ObjectType()
-export class UserEntity implements User {
+export class UserEntity {
   @Field(() => String)
   id!: string
 
@@ -33,4 +34,8 @@ export class UserEntity implements User {
 
   @Field(() => String, { nullable: true,})
   password!: string
+
+  @Field(() => [RoleEntity], { defaultValue: []})
+  roles: Role[]
+
 }

@@ -17,7 +17,14 @@ export class UsersService {
       data: {
         ...createUserInput,
         password: hashedPassword,
+        notificationPreference: {
+          create:{
+            whatsapp: false,
+            email: true
+          }
+        }
       },
+      include: { roles: true, notificationPreference: true}
     })
 
     return user
@@ -26,7 +33,9 @@ export class UsersService {
   async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: {
       email
-    }});
+    },
+    include: { roles: true}
+  });
     const passwordIsValid = await compare(password, user.password);
     if (!passwordIsValid) {
       throw new UnauthorizedException('Credentials are not valid.');
@@ -35,13 +44,15 @@ export class UsersService {
   }
 
   async list(): Promise<UserEntity[]> {
-    const user = await this.prisma.user.findMany()
+    const user = await this.prisma.user.findMany({
+      include: { roles: true, notificationPreference: true},
+    })
 
     return user
   }
 
   async retrieve(id: string): Promise<UserEntity> {
-    const user = await this.prisma.user.findUniqueOrThrow({ where: { id } })
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id }, include: { roles: true} })
 
     return user
   }
@@ -67,7 +78,8 @@ export class UsersService {
 
   async getUser(args: Partial<UserEntity>) {
     const user = await this.prisma.user.findUnique({
-      where:{ ...args}
+      where:{ ...args},
+      include: { roles: true, notificationPreference: true }
     })
 
     return user;

@@ -6,7 +6,7 @@ import { LoginInput } from './dto/login.input'
 import { RequestPasswordResetInput } from './dto/request-password-reset.input'
 import { ResetPasswordInput } from './dto/reset-password.input'
 import { ValidatePasswordResetTokenInput } from './dto/validate-password-reset-token.input'
-import { LogoutEntity } from './entities/auth.entity'
+import { LogoutEntity, MeEntity } from './entities/auth.entity'
 import { ValidatePasswordResetTokenEntity } from './entities/validate-password-reset-token.entity'
 import { Request } from 'express'
 import { SessionLocalAuthGuard } from './guards/local-auth.guard'
@@ -62,11 +62,13 @@ export class AuthResolver {
     return { status: 'Success' }
   }
 
-  @Query(() => LogoutEntity)
+  @Query(() => MeEntity)
   @UseGuards(IsAuthenticated)
   async me(@Context('req') request: Request) {
+    console.log('this is user iddddd', request.user.id)
     return {
-      status: `req.Session ID ${request.user}`
+      userId: request.user.id,
+      roles: request.user.roles
     }
   }
 }

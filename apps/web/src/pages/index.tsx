@@ -3,6 +3,7 @@ import { useLoginMutation, LoginInput, useMeQuery } from '../../types';
 import { Box, Button, Input, InputGroup, InputRightElement, Stack, Heading, Text, VStack, Image } from '@chakra-ui/react'
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/router';
+import '@fontsource/fira-sans';
 
 function Login() {
   const [show, setShow] = React.useState(false);
@@ -10,6 +11,7 @@ function Login() {
   const { email, password } = loginInput;
 
   const [loginMutation, { data: loginData, loading: loginLoading, error: loginError }] = useLoginMutation();
+
 
   const handleClick = () => setShow(!show);
   const router = useRouter();
@@ -44,7 +46,6 @@ function Login() {
   };
 
   return (
-    <div>
       <Stack height="100vh" direction="column" alignItems="center" justifyContent="center">
         <Box margin="10">
           <Image src='/logo.png' alt='logo' />
@@ -90,8 +91,8 @@ function Login() {
           </form>
         </Box>
       </Stack>
-    </div>
   );
 }
 
 export default Login;
+

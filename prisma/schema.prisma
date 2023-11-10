@@ -14,7 +14,7 @@ model Session {
   id        String   @id
   sid       String   @unique
   data      String
-  expiresAt   DateTime
+  expiresAt DateTime
 }
 
 enum RoleType {
@@ -28,36 +28,36 @@ enum RoleType {
 }
 
 model User {
-  id                 String               @id @default(uuid())
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  name               String
-  last_name          String
-  phone_number       String?
-  user_name          String               @unique
-  email              String               @unique
-  password           String
-  UserRole           UserRole[]
-  approvedRequested  EventRequest[]       @relation("approvedBy")
-  eventsRequested    EventRequest[]       @relation("requestedBy")
-  PasswordResetToken PasswordResetToken[]
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  name         String
+  last_name    String
+  phone_number String?
+  user_name    String   @unique
+  email        String   @unique
+  password     String
+  roles        Role[]
+
+  notificationPreference NotificationPreference?
+  approvedRequested      RequestEvent[]          @relation("approvedBy")
+  eventsRequested        RequestEvent[]          @relation("requestedBy")
+  PasswordResetToken     PasswordResetToken[]
 }
 
-model UserRole {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role     @relation(fields: [roleId], references: [id])
-  roleId    String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
+model NotificationPreference {
+  id       String   @id @default(uuid())
+  email    Boolean? @default(true)
+  whatsapp Boolean? @default(false)
+  userId   String   @unique
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Role {
-  id          String     @id @default(uuid())
-  name        RoleType   @default(USER)
+  id          String   @id @default(uuid())
+  name        RoleType @unique @default(USER)
   description String
-  users       UserRole[]
+  users       User[]
 }
 
 model PasswordResetToken {
@@ -69,21 +69,22 @@ model PasswordResetToken {
   userId          String
 }
 
-enum EventRequestStatus {
+enum RequestEventStatus {
   APPROVED
   REJECTED
   PENDING
 }
 
-model EventRequest {
+model RequestEvent {
   id            String             @id @default(uuid())
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
+  title         String              @default("Test Title")
   requestedById String
   requestedBy   User               @relation(name: "requestedBy", fields: [requestedById], references: [id])
-  approvedById  String
-  approvedBy    User               @relation(name: "approvedBy", fields: [approvedById], references: [id])
-  status        EventRequestStatus @default(PENDING)
+  approvedById  String?
+  approvedBy    User?              @relation(name: "approvedBy", fields: [approvedById], references: [id])
+  status        RequestEventStatus @default(PENDING)
 }
 
 model Event {

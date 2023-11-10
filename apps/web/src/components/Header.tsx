@@ -15,6 +15,10 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'next/router';
+import { useStore } from 'zustand';
+import { useUserStore } from '@/stores/userStore';
 
 interface HeaderProps {
   onLogout: () => void;
@@ -23,19 +27,25 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onLogout }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
 
   const handleHeaderClick = () => {
-    onOpen(); // Open the Menu when the header is clicked
+    onOpen();
   };
+
+  const handleLogout = () => {
+    logout();
+    router.replace('/')
+  }
 
   return (
     <Box
       zIndex="20"
       position="fixed"
       top="0"
-      width="88vw"  // Corrected '100wh' to '100vw' for viewport width
+      width="88vw"
       as="header"
-      bg="whiteAlpha.400"
       boxShadow="md"
       p={3}
       display="flex"
@@ -57,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
             <MenuItem onClick={onOpen}>
               Profile
             </MenuItem>
-            <MenuItem onClick={onLogout}>
+            <MenuItem onClick={handleLogout}>
               Logout
             </MenuItem>
           </MenuList>

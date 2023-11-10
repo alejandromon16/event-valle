@@ -4,8 +4,25 @@ query GetUsers {
     email
     createdAt
     name
+    roles {
+      name
+      id
+    }
     password
     updatedAt
+  }
+}
+
+query GetListOfRequestsEvents{
+  getListOfRequestsEvents{
+    id
+    status
+    title
+    requestedBy {
+      id
+      name
+      user_name
+    }
   }
 }
 
@@ -19,8 +36,44 @@ mutation Login($input:LoginInput!){
   }
 }
 
-query Me {
+query getMe{
   me {
+    userId
+    roles {
+      name
+    }
+  }
+}
+
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(createUserInput: $input) {
+    id
+    email
+    last_name
+    name
+    phone_number
+    user_name
+  }
+}
+
+
+mutation CreateRequestEvent($input: CreateRequestEventInput!){
+  createRequestEvent(createRequestEventInput: $input){
+    id
+    createdAt
     status
+    title
+  }
+}
+
+query RolesList{
+  rolesList{
+    id
+    name
+    description
+    users {
+      id
+      name
+    }
   }
 }

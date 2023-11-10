@@ -7,6 +7,9 @@ import { UsersModule } from '../gql-resources/users/users.module';
 import { DatabaseModule } from '../common/services/database/prisma.module';
 import { AuthModule } from '../gql-resources/auth/auth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RolesModule } from '../gql-resources/roles/roles.module';
+import { RequestsEventsModule } from '../gql-resources/requests-events/requests-events.module';
+import { WhatsappService } from '../common/services/whatsapp/ultrasmg.service';
 
 @Module({
   imports: [
@@ -20,9 +23,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     UsersModule,
     DatabaseModule,
+    RolesModule,
+    RequestsEventsModule,
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, WhatsappService],
 })
 export class AppModule {}

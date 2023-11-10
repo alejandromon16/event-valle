@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+'use client'
+import React, { ReactNode, useEffect } from 'react';
 import {
   ChakraProvider,
   CSSReset,
@@ -9,28 +10,15 @@ import {
 } from '@chakra-ui/react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
-import '@fontsource/fira-sans';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'next/router';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: 'dark',
-    useSystemColorMode: false,
-  },
-  fonts: {
-    heading: `'Fira sans', sans-serif`,
-    body: `'Fira sans', sans-serif`,
-  },
-});
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <ChakraProvider theme={theme}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <CSSReset />
       <Box display="flex" minHeight="100vh">
         {/* Sidebar Component */}
         <Sidebar isOpen={true} onClose={() => {}} />
@@ -45,7 +33,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Box>
         </Flex>
       </Box>
-    </ChakraProvider>
   );
 };
 

@@ -109,6 +109,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({
       where: { email: email?.toLowerCase() },
+      include: { roles: true}
     })
 
     if (!user)

@@ -4,7 +4,7 @@ import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator'
 import { TransformLowercase } from '../../../common/decorators/transformers/transform-lowercase.decorator'
 
 @InputType()
-export class CreateUserInput implements Prisma.UserUncheckedCreateInput {
+export class CreateUserInput implements Prisma.UserCreateWithoutRolesInput, Prisma.UserCreateWithoutNotificationPreferenceInput {
   id?: string | undefined
 
   @IsString()
@@ -39,4 +39,5 @@ export class CreateUserInput implements Prisma.UserUncheckedCreateInput {
   @Field(() => Int, { nullable: true })
   createdAt?: string | Date | undefined
   updatedAt?: string | Date | undefined
+
 }

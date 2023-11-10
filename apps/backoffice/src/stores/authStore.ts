@@ -1,27 +1,38 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
-import { User, useUserStore } from './userStore'; // Import the user store
+import { RoleType, User } from "@prisma/client";
 
-
-interface AuthActions {
-  login: (user: User) => void;
-  logout: () => void;
+interface AuthState {
+  isAuthenticated: boolean;
+  user: Partial<User>;
+  roles: RoleType[];
 }
 
-export const useAuthStore = create<AuthActions>()(
+interface AuthActions {
+  login(user:Partial<User>, roles: RoleType[]) : void;
+  logout(): void;
+}
+
+export const useAuthStore = create<AuthState & AuthActions>()(
   devtools(
     persist(
       (set) => ({
-        login: (user) => {
-          useUserStore((state) => state.setUser(user))
+        roles: [],
+        isAuthenticated: false,
+        user: {},
+
+        login: (user, roles) => {
+          set((state) => ({ user, isAuthenticated: true, roles }));
+
         },
         logout: () => {
-          useUserStore((state) => state.logout())
+          set({ user: {}, isAuthenticated: false, roles: [] });
         },
       }),
       {
-        name: 'auth-storage',
+        name: "auth-storage"
       }
     )
   )
-);
+)
+
