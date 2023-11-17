@@ -1,0 +1,102 @@
+"""Exposes a URL that specifies the behavior of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behavior of this scalar."""
+  url: String!
+) on SCALAR
+
+input CreateUserInput {
+  createdAt: Int
+  email: String!
+  last_name: String!
+  name: String!
+  password: String!
+  phone_number: String
+  user_name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""Login user input"""
+input LoginInput {
+  """Email of the user"""
+  email: String!
+
+  """Password of the user"""
+  password: String!
+}
+
+type LogoutEntity {
+  status: String!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): UserEntity!
+  login(loginInput: LoginInput!): UserEntity!
+  removeUser(id: String!): UserEntity!
+  requestPasswordReset(requestPasswordResetInput: RequestPasswordResetInput!): UserEntity!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): UserEntity!
+  updateUser(updateUserInput: UpdateUserInput!): UserEntity!
+  validatePasswordResetToken(validatePasswordResetTokenInput: ValidatePasswordResetTokenInput!): ValidatePasswordResetTokenEntity!
+}
+
+type Query {
+  listUsers: [UserEntity!]!
+  logout: LogoutEntity!
+  me: UserEntity!
+  retrieveUser(id: String!): UserEntity!
+}
+
+"""Reset password input"""
+input RequestPasswordResetInput {
+  """Email of the user"""
+  email: String!
+}
+
+"""Reset password input"""
+input ResetPasswordInput {
+  """New password to update"""
+  newPassword: String!
+
+  """Password reset token to validate"""
+  token: String!
+  userId: String!
+}
+
+input UpdateUserInput {
+  createdAt: Int
+  email: String
+  id: String!
+  last_name: String
+  name: String
+  password: String
+  phone_number: String
+  user_name: String
+}
+
+type UserEntity {
+  createdAt: String
+  email: String!
+  id: String!
+  last_name: String!
+  name: String!
+  password: String
+  phone_number: String
+  updatedAt: String
+  user_name: String!
+}
+
+type ValidatePasswordResetTokenEntity {
+  """Expiration date of password reset token"""
+  expiration_date: DateTime!
+}
+
+"""Validate password reset token input"""
+input ValidatePasswordResetTokenInput {
+  """Password reset token to validate"""
+  token: String!
+  user_id: String!
+}
+
