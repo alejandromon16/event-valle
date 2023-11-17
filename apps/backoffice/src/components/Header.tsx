@@ -31,8 +31,8 @@ const Header: React.FC<HeaderProps> = ({ onLogout, router }) => {
 
   const handleLogout = async () => {
     logout();
-    router.replace('/');
     await axios.delete('/api/auth');
+    router.replace('/');
   }
 
   return (
@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout, router }) => {
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        bg="white"
+        bg={colorMode === "light" ? 'white': '#1a202c'}
       >
         <Box flex="1">
           <Heading fontSize="xl">Usuarios</Heading>

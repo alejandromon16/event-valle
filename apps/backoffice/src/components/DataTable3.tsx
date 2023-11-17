@@ -20,10 +20,14 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
-function DataTable({ columns, data }) {
-  const [menuOpen, setMenuOpen] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+interface DataTableProps {
+  data: any[];
+  columns: any[];
+  onEdit: (item: any) => void;
+}
+
+function DataTable({ columns, data, onEdit }: DataTableProps) {
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   const {
     getTableProps,
@@ -35,7 +39,7 @@ function DataTable({ columns, data }) {
     canNextPage,
     nextPage,
     previousPage,
-    state: { pageIndex, pageSize, pageOptions, pageCount },
+    state: { pageIndex, pageCount },
   } = useTable(
     {
       columns,
@@ -45,15 +49,15 @@ function DataTable({ columns, data }) {
     usePagination
   );
 
-  const handleEditClick = (rowIndex) => {
-    // Handle edit button click here
+  const handleEditClick = (row: Row) => {
+    onEdit(row.original);
   };
 
-  const handleDeleteClick = (rowIndex) => {
+  const handleDeleteClick = (rowIndex: number) => {
     // Handle delete button click here
   };
 
-  const toggleRowSelection = (rowIndex) => {
+  const toggleRowSelection = (rowIndex: number) => {
     // Toggle the selected state of the row
     if (selectedRows.includes(rowIndex)) {
       setSelectedRows(selectedRows.filter((row) => row !== rowIndex));
@@ -63,16 +67,14 @@ function DataTable({ columns, data }) {
   };
 
   return (
-    <Box>
-      <Table {...getTableProps()} border="gray" boxShadow="md" variant="simple" colorScheme="gray">
+    <Box key="datatable-box">
+      <Table {...getTableProps()} border="gray" boxShadow="md" variant="simple" colorScheme="gray" key="datatable-table">
         <Thead>
           {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              <Th>
+            <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+              <Th key="checkbox-header">
                 <Checkbox
-                  isChecked={
-                    selectedRows.length === data.length
-                  }
+                  isChecked={selectedRows.length === data.length}
                   onChange={() => {
                     if (selectedRows.length === data.length) {
                       setSelectedRows([]);
@@ -83,47 +85,46 @@ function DataTable({ columns, data }) {
                 />
               </Th>
               {headerGroup.headers.map((column) => (
-                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
+                <Th {...column.getHeaderProps()} key={column.id}>
+                  {column.render('Header')}
+                </Th>
               ))}
-              <Th>Actions</Th>
+              <Th key="actions-header">Actions</Th>
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {page.map((row, rowIndex) => {
+        <Tbody {...getTableBodyProps()} key="tbody">
+          {page.map((row: Row, rowIndex: number) => {
             prepareRow(row);
             const isRowSelected = selectedRows.includes(rowIndex);
             const rowClassName = isRowSelected ? 'selected' : '';
 
             return (
               <Tr
-                bgColor={isRowSelected ? 'gray.100': ''}
-                {...row.getRowProps()}
+                bgColor={isRowSelected ? 'gray.100' : ''}
+                {...row.getRowProps({ key: row.id })}
                 className={rowClassName}
               >
-                <Td>
+                <Td key={`checkbox-cell-${rowIndex}`}>
                   <Checkbox
                     isChecked={isRowSelected}
                     onChange={() => toggleRowSelection(rowIndex)}
                   />
                 </Td>
                 {row.cells.map((cell) => (
-                  <Td
-
-                  {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                  <Td {...cell.getCellProps({ key: cell.column.id })} key={`data-cell-${cell.column.id}`}>
+                    {cell.render('Cell')}
+                  </Td>
                 ))}
-                <Td>
+                <Td key={`actions-cell-${rowIndex}`}>
                   <HStack spacing={2}>
-                    <Menu placement='bottom-end'>
-                      <MenuButton as={Button}
-                      variant="ghost"
-                      >...</MenuButton>
-                      <MenuList>
-                        <MenuItem onClick={()=>{}}>
+                    <Menu placement="bottom-end">
+                      <MenuButton as={Button} variant="ghost" key="menu-button">
+                        <ChevronDownIcon />
+                      </MenuButton>
+                      <MenuList key="menu-list">
+                        <MenuItem onClick={() => handleEditClick(row)} key={`edit-item-${rowIndex}`}>
                           Editar
-                        </MenuItem>
-                        <MenuItem onClick={()=> {}}>
-                          Detalles
                         </MenuItem>
                       </MenuList>
                     </Menu>
@@ -135,18 +136,18 @@ function DataTable({ columns, data }) {
         </Tbody>
       </Table>
 
-      <HStack mt="4" justifyContent="space-between">
-        <Text>
+      <HStack mt="4" justifyContent="space-between" key="pagination-stack">
+        <Text key="page-text">
           Page{' '}
-          <strong>
+          <strong key="page-strong">
             {pageIndex + 1} of {pageCount}
           </strong>
         </Text>
-        <Box>
-          <Button onClick={() => previousPage()} disabled={!canPreviousPage} variant="outline">
+        <Box key="pagination-box">
+          <Button onClick={() => previousPage()} disabled={!canPreviousPage} variant="outline" key="prev-button">
             Previous
           </Button>
-          <Button onClick={() => nextPage()} disabled={!canNextPage} variant="outline">
+          <Button onClick={() => nextPage()} disabled={!canNextPage} variant="outline" key="next-button">
             Next
           </Button>
         </Box>

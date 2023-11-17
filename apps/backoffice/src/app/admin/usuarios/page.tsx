@@ -1,16 +1,17 @@
 'use client'
-import React, { useState } from 'react';
-import { Box, Button, Checkbox, FormControl, FormLabel, Heading, HStack, IconButton, Input, InputGroup, InputLeftAddon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useColorMode, useToast } from '@chakra-ui/react';
-import { FaPen } from 'react-icons/fa';
+import React, { use, useState } from 'react';
+import { Box, Button, Heading, HStack, Input, InputGroup, InputLeftAddon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useColorMode, useToast } from '@chakra-ui/react';
 import { useGetUsersQuery } from '../../../../types';
 import DataTable from '@/src/components/DataTable3';
-import MyMultiSelect from '@/src/components/MultiSelect';
 import graphqlRequestClient from '@/src/providers/graphql';
 import CreateUserModal from '@/src/components/modals/user/create';
+import EditUserModal from '@/src/components/modals/user/edit';
 
 function index() {
   const [filterInput, setFilterInput] = useState('');
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
   const toast = useToast();
@@ -31,6 +32,18 @@ function index() {
     })
   };
 
+  const handleEditUserClick = (user) => {
+    console.log('user', user)
+    setSelectedUserForEdit(user);
+    setIsEditUserModalOpen(true);
+  };
+
+  const handleEditUser = (editedUserData) => {
+    // Implement the logic to update the user data on the server or state
+    console.log('Edited User Data:', editedUserData);
+    setIsEditUserModalOpen(false);
+  };
+
   const { data } = useGetUsersQuery(graphqlRequestClient,{});
 
   const mappedData = React.useMemo(() => {
@@ -41,6 +54,8 @@ function index() {
         email: user.email,
         createdAt: user.createdAt,
         name: user.name,
+        lastName: user.last_name,
+        phone: user.phone_number,
         roles: user.roles,
         password: user.password,
         updatedAt: user.updatedAt,
@@ -88,9 +103,6 @@ function index() {
     []
   );
 
-  // Render your DataTable component with the filteredData and columns
-
-
   const { colorMode } = useColorMode();
   return (
       <Box margin="20">
@@ -111,9 +123,22 @@ function index() {
                   </Button>
                 </HStack>
 
-              <CreateUserModal initialRef={initialRef} isOpen={isCreateUserModalOpen} handleCreate={() => handleCreateUser} onClose={() => setIsCreateUserModalOpen(false)} />
+              <EditUserModal
+                initialRef={initialRef}
+                isOpen={isEditUserModalOpen}
+                handleEdit={handleEditUser}
+                onClose={() => setIsEditUserModalOpen(false)}
+                userData={selectedUserForEdit}
+              />
 
-              <DataTable data={filteredData} columns={columns} />
+              <CreateUserModal
+                initialRef={initialRef}
+                isOpen={isCreateUserModalOpen}
+                handleCreate={() => handleCreateUser}
+                onClose={() => setIsCreateUserModalOpen(false)}
+              />
+
+              <DataTable data={filteredData} columns={columns} onEdit={handleEditUserClick} />
               </Box>
           </HStack>
       </Box>

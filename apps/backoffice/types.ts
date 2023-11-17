@@ -252,7 +252,7 @@ export type ValidatePasswordResetTokenInput = {
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', listUsers: Array<{ __typename?: 'UserEntity', id: string, email: string, createdAt?: string | null, name: string, password?: string | null, updatedAt?: string | null, roles: Array<{ __typename?: 'RoleEntity', name: RoleType, id: string }> }> };
+export type GetUsersQuery = { __typename?: 'Query', listUsers: Array<{ __typename?: 'UserEntity', id: string, email: string, createdAt?: string | null, name: string, last_name: string, phone_number?: string | null, password?: string | null, updatedAt?: string | null, roles: Array<{ __typename?: 'RoleEntity', name: RoleType, id: string }> }> };
 
 export type GetListOfRequestsEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -304,6 +304,8 @@ export const GetUsersDocument = `
     email
     createdAt
     name
+    last_name
+    phone_number
     roles {
       name
       id

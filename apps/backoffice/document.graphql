@@ -4,6 +4,8 @@ query GetUsers {
     email
     createdAt
     name
+    last_name
+    phone_number
     roles {
       name
       id

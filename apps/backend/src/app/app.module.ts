@@ -10,6 +10,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RolesModule } from '../gql-resources/roles/roles.module';
 import { RequestsEventsModule } from '../gql-resources/requests-events/requests-events.module';
 import { WhatsappService } from '../common/services/whatsapp/ultrasmg.service';
+import { EventsModule } from '../gql-resources/events/events.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { WhatsappService } from '../common/services/whatsapp/ultrasmg.service';
     DatabaseModule,
     RolesModule,
     RequestsEventsModule,
-    AuthModule
+    AuthModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService, WhatsappService],

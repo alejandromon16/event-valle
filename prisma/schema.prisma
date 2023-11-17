@@ -43,6 +43,7 @@ model User {
   approvedRequested      RequestEvent[]          @relation("approvedBy")
   eventsRequested        RequestEvent[]          @relation("requestedBy")
   PasswordResetToken     PasswordResetToken[]
+  eventPublished         Event[]                 @relation("publishedBy")
 }
 
 model NotificationPreference {
@@ -79,23 +80,45 @@ model RequestEvent {
   id            String             @id @default(uuid())
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
-  title         String              @default("Test Title")
+  title         String             @default("Test Title")
   requestedById String
   requestedBy   User               @relation(name: "requestedBy", fields: [requestedById], references: [id])
   approvedById  String?
   approvedBy    User?              @relation(name: "approvedBy", fields: [approvedById], references: [id])
   status        RequestEventStatus @default(PENDING)
+
+  Event Event?
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISH
 }
 
 model Event {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id             String    @id @default(uuid())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   title          String
+  subtitle       String
   description    String
   principalImage String
-  thumbnail      String
   images         String[]
+  tags           String[]
+  startDate      DateTime
+  endDate        DateTime?
+  locationName   String
+  locationDetail String?
+  address        String
 
-  published Boolean @default(false)
+  //optional
+  longitud Float?
+  latitud  Float?
+
+  status EventStatus @default(DRAFT)
+
+  publishedById  String?
+  publishedBy    User?         @relation(name: "publishedBy", fields: [publishedById], references: [id])
+  requestEventId String        @unique
+  requestEvent   RequestEvent? @relation(fields: [requestEventId], references: [id])
 }

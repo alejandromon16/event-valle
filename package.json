@@ -38,6 +38,7 @@
     "expo-status-bar": "~1.6.0",
     "express-session": "^1.17.3",
     "graphql": "^16.8.1",
+    "graphql-date-scalars": "^0.2.0",
     "ioredis": "^5.3.2",
     "luxon": "^3.4.3",
     "nativewind": "^2.0.11",
