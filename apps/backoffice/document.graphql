@@ -88,3 +88,17 @@ query RolesList{
     }
   }
 }
+
+query GetListOfRequestsEventsByUserId($input:GetRequestsEventsByUserIdInput!){
+  getListOfRequestsEventsByUserId(getRequestsEventsByUserId:$input){
+    id
+    status
+    title
+    createdAt
+    requestedBy {
+      id
+      name
+      user_name
+    }
+  }
+}

@@ -78,6 +78,10 @@ input FindRoleByNameInput {
   name: RoleType!
 }
 
+input GetRequestsEventsByUserIdInput {
+  userId: String!
+}
+
 """Login user input"""
 input LoginInput {
   """Email of the user"""
@@ -116,6 +120,7 @@ type Query {
   getListOfEventsForThisMonth: [EventEntity!]!
   getListOfEventsForThisWeek: [EventEntity!]!
   getListOfRequestsEvents: [RequestEventEntity!]!
+  getListOfRequestsEventsByUserId(getRequestsEventsByUserId: GetRequestsEventsByUserIdInput!): [RequestEventEntity!]!
   listUsers: [UserEntity!]!
   logout: LogoutEntity!
   me: MeEntity!

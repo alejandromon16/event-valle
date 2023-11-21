@@ -19,4 +19,4 @@ export class CreateRequestEventInput implements Prisma.RequestEventCreateWithout
     updatedAt?: string | Date | undefined
 
     requestedBy: Prisma.UserCreateNestedOneWithoutEventsRequestedInput | undefined;
-  }
+}

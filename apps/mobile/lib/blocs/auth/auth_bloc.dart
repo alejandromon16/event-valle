@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (user != null) {
         print('succes login suc ${user.name}');
-        emit(AuthAuthenticated());
+        emit(AuthAuthenticated(userId: user.id));
       } else {
         print('error');
         emit(AuthUnauthenticated());

@@ -7,26 +7,40 @@ class EventDetailsView extends StatefulWidget {
   final EventEntity event;
   final double screenHeight;
 
-  const EventDetailsView({
-    Key? key,
-    required this.event,
-    required this.screenHeight
-  });
+  const EventDetailsView(
+      {Key? key, required this.event, required this.screenHeight});
 
   @override
   State<EventDetailsView> createState() => _EventDetailsViewState();
 }
+
 class _EventDetailsViewState extends State<EventDetailsView> {
   late ScrollController _controller;
+  bool favorite = false;
+  bool asistire = false;
 
   @override
-  void initState(){
-    _controller = ScrollController(initialScrollOffset: widget.screenHeight * .3);
+  void initState() {
+    _controller =
+        ScrollController(initialScrollOffset: widget.screenHeight * .3);
     super.initState();
   }
 
+  void toggle_favorite() {
+    setState(() {
+      favorite = !favorite;
+    });
+  }
+
+  void toggle_asistire() {
+    setState(() {
+      asistire = !asistire;
+    });
+  }
+
+
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }
@@ -34,183 +48,183 @@ class _EventDetailsViewState extends State<EventDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomScrollView(
-            controller: _controller,
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverPersistentHeader(
+        body: Stack(
+      children: [
+        CustomScrollView(
+          controller: _controller,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPersistentHeader(
                 delegate: BuilderPersistentDelegate(
-                  maxExtent: MediaQuery.of(context).size.height,
-                  minExtent: 200,
-                  builder: (percent) {
-                    return AnimatedDetailHeader(
-                      event: widget.event,
-                      topPercent: ((1 - percent) / .7).clamp(0.0, 1.0),
-                      bottomPercent: (percent / .3).clamp(0.0, 1.0),
-                    );
-                  }
-                )
-              ),
-
-              const SliverToBoxAdapter(
-                child: EventTopInfo(),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                            child: Text(
-                              'Tags',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Text(
-                              'Tecnologia'
+                    maxExtent: MediaQuery.of(context).size.height,
+                    minExtent: 200,
+                    builder: (percent) {
+                      return AnimatedDetailHeader(
+                        event: widget.event,
+                        topPercent: ((1 - percent) / .7).clamp(0.0, 1.0),
+                        bottomPercent: (percent / .3).clamp(0.0, 1.0),
+                      );
+                    })),
+            const SliverToBoxAdapter(
+              child: EventTopInfo(),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                          child: Text(
+                            'Tags',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
+                        )
+                      ],
+                    ),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
                               color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Text(
-                              'Tecnologia'
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text('Tecnologia'),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
                               color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Text(
-                              'Tecnologia'
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text('Tecnologia'),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
                               color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Text(
-                              'Tecnologia'
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text('Tecnologia'),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
                               color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Text(
-                              'Tecnologia'
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text('Tecnologia'),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.black12,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text('Tecnologia'),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
-              SliverToBoxAdapter(
-                child: SizedBox(height: 150),
-              )
-            ],
-          ),
-          Positioned.fill(
-            top: null,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 150),
+            )
+          ],
+        ),
+        Positioned.fill(
+          top: null,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white.withOpacity(0),
-                    Colors.white,
-                  ]
-                )
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  Colors.white.withOpacity(0),
+                  Colors.white,
+                ])),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.pink,
+                      border: Border.all(
+                          color: asistire ? Colors.white : Colors.pink),
+                      color: asistire ? Colors.pink : Colors.white,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.handshake, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                        Text('Asistire',
-                          style: TextStyle(
-                            color: Colors.white
+                    child:
+                    InkWell(
+                      onTap: (){
+                        toggle_asistire();
+                      },
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.handshake,
+                                color: asistire ? Colors.white : Colors.pink),
+                            onPressed: (){
+                              toggle_asistire();
+                            },
                           ),
-                        ),
-                        SizedBox(width: 5)
-                      ],
+                          Text(
+                            'Asistire',
+                            style: TextStyle(
+                                color: asistire ? Colors.white : Colors.pink),
+                          ),
+                          SizedBox(width: 5)
+                        ],
+                      ),
                     )
                   ),
-                  Container(
+                Container(
                     margin: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(50)),
-                      border: Border.all(color: Colors.pink)
+                      border: Border.all(
+                          color: favorite ? Colors.white : Colors.pink),
+                      color: favorite ? Colors.pink : Colors.white,
                     ),
                     child: IconButton(
-                      onPressed:(){} ,
+                      onPressed: () {
+                        toggle_favorite();
+                      },
                       style: TextButton.styleFrom(
                         primary: Colors.pink,
                         shape: const StadiumBorder(),
                       ),
-                      icon: Icon( Icons.favorite_border, color: Colors.pink,),
-                    )
-                  ),
-                ],
-              ),
+                      icon: Icon(
+                        favorite ? Icons.favorite : Icons.favorite_border,
+                        color: favorite ? Colors.white : Colors.pink,
+                      ),
+                    )),
+              ],
             ),
-          )
-        ],
-      )
-    );
+          ),
+        )
+      ],
+    ));
   }
 }
 
 class EventTopInfo extends StatelessWidget {
-  const EventTopInfo({
-    Key? key
-  });
+  const EventTopInfo({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -242,9 +256,7 @@ class EventTopInfo extends StatelessWidget {
                   Text(
                     'Av banzer 8 anillo',
                     style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black45
-                    ),
+                        fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
                 ],
               )
@@ -275,16 +287,14 @@ class EventTopInfo extends StatelessWidget {
                   Text(
                     'Martes, 4:00 PM - 10:30 PM',
                     style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black45
-                    ),
+                        fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
                 ],
               )
             ],
           ),
           SizedBox(height: 30),
-         Text(
+          Text(
             'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
           ),
           SizedBox(height: 10),
@@ -295,10 +305,7 @@ class EventTopInfo extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 class BuilderPersistentDelegate extends SliverPersistentHeaderDelegate {
   final double _maxExtend;
@@ -309,15 +316,17 @@ class BuilderPersistentDelegate extends SliverPersistentHeaderDelegate {
     required double maxExtent,
     required double minExtent,
     required this.builder,
-  }): _maxExtend = maxExtent, _minExtend = minExtent;
+  })  : _maxExtend = maxExtent,
+        _minExtend = minExtent;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return builder(shrinkOffset / _maxExtend);
   }
 
   @override
-  double get maxExtent =>  _maxExtend;
+  double get maxExtent => _maxExtend;
 
   @override
   double get minExtent => _minExtend;
@@ -326,6 +335,4 @@ class BuilderPersistentDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
   }
-
 }
-

@@ -31,6 +31,21 @@ export type AssignRolesToUserInput = {
   userId: Scalars['String']['input'];
 };
 
+export type CreateEventInput = {
+  address: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  description: Scalars['String']['input'];
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  images: Array<Scalars['String']['input']>;
+  locationName: Scalars['String']['input'];
+  principalImage: Scalars['String']['input'];
+  requestEventId: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+  subtitle: Scalars['String']['input'];
+  tags: Array<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+};
+
 export type CreateRequestEventInput = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   requestedById: Scalars['String']['input'];
@@ -52,8 +67,39 @@ export type CreateUserInput = {
   user_name: Scalars['String']['input'];
 };
 
+export type EventEntity = {
+  __typename?: 'EventEntity';
+  address: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  images: Array<Scalars['String']['output']>;
+  latitud?: Maybe<Scalars['Float']['output']>;
+  locationDetail?: Maybe<Scalars['String']['output']>;
+  locationName: Scalars['String']['output'];
+  longitud?: Maybe<Scalars['Float']['output']>;
+  principalImage: Scalars['String']['output'];
+  startDate: Scalars['DateTime']['output'];
+  status: EventStatus;
+  subtitle: Scalars['String']['output'];
+  tags: Array<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
+/** Possible status for events */
+export enum EventStatus {
+  Draft = 'DRAFT',
+  Publish = 'PUBLISH'
+}
+
 export type FindRoleByNameInput = {
   name: RoleType;
+};
+
+export type GetRequestsEventsByUserIdInput = {
+  userId: Scalars['String']['input'];
 };
 
 /** Login user input */
@@ -78,6 +124,7 @@ export type MeEntity = {
 export type Mutation = {
   __typename?: 'Mutation';
   assignRolesToUser: UserEntity;
+  createEvent: EventEntity;
   createRequestEvent: RequestEventEntity;
   createRole: RoleEntity;
   createUser: UserEntity;
@@ -92,6 +139,11 @@ export type Mutation = {
 
 export type MutationAssignRolesToUserArgs = {
   assignRolesToUser: AssignRolesToUserInput;
+};
+
+
+export type MutationCreateEventArgs = {
+  createEventInput: CreateEventInput;
 };
 
 
@@ -142,7 +194,11 @@ export type MutationValidatePasswordResetTokenArgs = {
 export type Query = {
   __typename?: 'Query';
   findRoleByName: RoleEntity;
+  getListOfEvents: Array<EventEntity>;
+  getListOfEventsForThisMonth: Array<EventEntity>;
+  getListOfEventsForThisWeek: Array<EventEntity>;
   getListOfRequestsEvents: Array<RequestEventEntity>;
+  getListOfRequestsEventsByUserId: Array<RequestEventEntity>;
   listUsers: Array<UserEntity>;
   logout: LogoutEntity;
   me: MeEntity;
@@ -153,6 +209,11 @@ export type Query = {
 
 export type QueryFindRoleByNameArgs = {
   findRoleByName: FindRoleByNameInput;
+};
+
+
+export type QueryGetListOfRequestsEventsByUserIdArgs = {
+  getRequestsEventsByUserId: GetRequestsEventsByUserIdInput;
 };
 
 
@@ -294,6 +355,13 @@ export type RolesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RolesListQuery = { __typename?: 'Query', rolesList: Array<{ __typename?: 'RoleEntity', id: string, name: RoleType, description: string, users: Array<{ __typename?: 'UserEntity', id: string, name: string }> }> };
+
+export type GetListOfRequestsEventsByUserIdQueryVariables = Exact<{
+  input: GetRequestsEventsByUserIdInput;
+}>;
+
+
+export type GetListOfRequestsEventsByUserIdQuery = { __typename?: 'Query', getListOfRequestsEventsByUserId: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, createdAt?: string | null, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
 
 
 
@@ -525,5 +593,37 @@ export const useRolesListQuery = <
     return useQuery<RolesListQuery, TError, TData>(
       variables === undefined ? ['RolesList'] : ['RolesList', variables],
       fetcher<RolesListQuery, RolesListQueryVariables>(client, RolesListDocument, variables, headers),
+      options
+    )};
+
+export const GetListOfRequestsEventsByUserIdDocument = `
+    query GetListOfRequestsEventsByUserId($input: GetRequestsEventsByUserIdInput!) {
+  getListOfRequestsEventsByUserId(getRequestsEventsByUserId: $input) {
+    id
+    status
+    title
+    createdAt
+    requestedBy {
+      id
+      name
+      user_name
+    }
+  }
+}
+    `;
+
+export const useGetListOfRequestsEventsByUserIdQuery = <
+      TData = GetListOfRequestsEventsByUserIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetListOfRequestsEventsByUserIdQueryVariables,
+      options?: UseQueryOptions<GetListOfRequestsEventsByUserIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetListOfRequestsEventsByUserIdQuery, TError, TData>(
+      ['GetListOfRequestsEventsByUserId', variables],
+      fetcher<GetListOfRequestsEventsByUserIdQuery, GetListOfRequestsEventsByUserIdQueryVariables>(client, GetListOfRequestsEventsByUserIdDocument, variables, headers),
       options
     )};

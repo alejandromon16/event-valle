@@ -4,6 +4,7 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../../common/services/database/prisma.service';
 import { WhatsappService } from '../../common/services/whatsapp/ultrasmg.service';
 import { CreateRequestEventInput } from './dto/request-event.input';
+import { GetRequestsEventsByUserIdInput } from './dto/requests-event-list-user.input';
 import { RequestEventEntity } from './entities/request-event.entity';
 import { RequestEventCreatedEvent } from './events/request-event-created';
 
@@ -57,6 +58,19 @@ export class RequestsEventsService {
     const requestsEvents = this.prisma.requestEvent.findMany({
       include: { requestedBy: true }
     });
+    return requestsEvents;
+  }
+
+  async getListByUserId({userId}: GetRequestsEventsByUserIdInput) : Promise<RequestEventEntity[]> {
+    const requestsEvents = this.prisma.requestEvent.findMany({
+      where: {
+        requestedById: userId
+      },
+      include: {
+        requestedBy: true
+      }
+    })
+
     return requestsEvents;
   }
 

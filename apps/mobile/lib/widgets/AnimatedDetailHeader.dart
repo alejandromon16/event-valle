@@ -107,7 +107,7 @@ class AnimatedDetailHeader extends StatelessWidget {
         Positioned.fill(
           top: null,
           child: TranslateAnimation(
-            child: _UserInfoContainer(),
+            child: UserInfoContainer(),
           )
         ),
       ],
@@ -137,10 +137,25 @@ class TranslateAnimation extends StatelessWidget {
 }
 
 
-class _UserInfoContainer extends StatelessWidget {
-  const _UserInfoContainer({
-    Key? key,
-  }):super(key:key);
+class UserInfoContainer extends StatefulWidget {
+
+  const UserInfoContainer({
+    Key? key
+  });
+
+  @override
+  State<UserInfoContainer> createState() => _UserInfoContainerState();
+}
+
+class _UserInfoContainerState extends State<UserInfoContainer>{
+
+  bool guardado = false;
+
+  void toggle_guardado() {
+    setState(() {
+      guardado = !guardado;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,9 +197,12 @@ class _UserInfoContainer extends StatelessWidget {
           const Spacer(),
           IconButton(
             onPressed: (){
-
+              toggle_guardado();
             },
-            icon: Icon(Icons.turned_in_not, color: Colors.black,)
+            icon: Icon(
+              guardado ? Icons.turned_in : Icons.turned_in_not,
+              color:  Colors.black,
+            )
           ),
         ],
       )

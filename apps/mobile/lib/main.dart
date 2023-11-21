@@ -1,4 +1,5 @@
 import 'package:eventvalle/blocs/auth/auth_bloc.dart';
+import 'package:eventvalle/views/app.dart';
 import 'package:eventvalle/views/home.dart';
 import 'package:eventvalle/views/login.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class AppRouter extends StatelessWidget {
     //   }
     // );
 
-    return HomeView();
+    return AppView();
   }
 }
 

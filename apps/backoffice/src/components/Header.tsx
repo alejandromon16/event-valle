@@ -14,6 +14,8 @@ import {
 import { ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { useAuthStore } from '../stores/authStore';
 import axios from 'axios';
+import { User } from '@prisma/client';
+import ViewUserModal from './modals/user/profile';
 
 interface HeaderProps {
   onLogout: () => void;
@@ -21,12 +23,14 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onLogout, router }) => {
+  const authState = useAuthStore();
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [viewProfileModalOpen, setViewProfileModalOpen] = React.useState(false);
+  const [currentUserData, setCurrentUserData ] = React.useState<Partial<User>>(authState.user)
   const logout = useAuthStore((state) => state.logout);
 
-  const handleHeaderClick = () => {
-    onOpen();
+  const handleProfileClick = () => {
+      setViewProfileModalOpen(true);
   };
 
   const handleLogout = async () => {
@@ -60,15 +64,22 @@ const Header: React.FC<HeaderProps> = ({ onLogout, router }) => {
               leftIcon={<Avatar size="xs" src="/avatar2.png" />}
               rightIcon={<ChevronDownIcon />}
             >
-              alm1
+              {authState.user.user_name}
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={onOpen}>Profile</MenuItem>
+              <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Box>
       </Box>
+
+      <ViewUserModal
+        isOpen={viewProfileModalOpen}
+        onClose={() => setViewProfileModalOpen(false)}
+        userData={currentUserData}
+        roles={authState.roles}
+      />
     </Box>
   );
 };

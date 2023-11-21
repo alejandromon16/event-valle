@@ -44,6 +44,8 @@ model User {
   eventsRequested        RequestEvent[]          @relation("requestedBy")
   PasswordResetToken     PasswordResetToken[]
   eventPublished         Event[]                 @relation("publishedBy")
+  likedEvents            Event[]                 @relation("UserlikedEvents")
+  savedEvents            Event[]                 @relation("UserSavedEvents")
 }
 
 model NotificationPreference {
@@ -121,4 +123,6 @@ model Event {
   publishedBy    User?         @relation(name: "publishedBy", fields: [publishedById], references: [id])
   requestEventId String        @unique
   requestEvent   RequestEvent? @relation(fields: [requestEventId], references: [id])
+  likedBy        User[]        @relation(name: "UserlikedEvents")
+  savedBy        User[]        @relation(name: "UserSavedEvents")
 }

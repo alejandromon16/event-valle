@@ -1,62 +1,53 @@
 'use client'
 import React, { use, useState } from 'react';
 import { Box, Button, Heading, HStack, Input, InputGroup, InputLeftAddon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useColorMode, useToast } from '@chakra-ui/react';
-import { useGetListOfRequestsEventsQuery, useGetUsersQuery } from '../../../../types';
+import { useGetListOfRequestsEventsByUserIdQuery, useGetListOfRequestsEventsQuery, useGetUsersQuery } from '../../../../types';
 import DataTable from '@/src/components/DataTable3';
 import graphqlRequestClient from '@/src/providers/graphql';
-import CreateUserModal from '@/src/components/modals/user/create';
-import EditUserModal from '@/src/components/modals/user/edit';
+import { useAuthStore } from '@/src/stores/authStore';
+import { RoleType } from '@prisma/client';
+import CreateRequestEventModal from '@/src/components/modals/requestEvent/create';
+import EditRequestEventModal from '@/src/components/modals/requestEvent/edit';
 
 function index() {
   const [filterInput, setFilterInput] = useState('');
-  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
-  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
-  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedForEdit, setSelectedForEdit] = useState(null);
   const initialRef = React.useRef(null)
-  const finalRef = React.useRef(null)
-  const toast = useToast();
-
-  const handleCreateUserClick = () => {
-    setIsCreateUserModalOpen(true);
-  };
-
-  const handleCreateUser = () => {
-    setIsCreateUserModalOpen(false);
-    const examplePromise = new Promise((resolve, reject) => {
-      setTimeout(() => resolve(200), 5000)
+  const authStore = useAuthStore();
+  const specialQueryRoles = new Set<RoleType>(['SUPER_ADMIN', 'REQUEST_APPROVER']);
+  const { data, refetch: RefetchRequestsEvents } =  authStore.roles.some(role => specialQueryRoles.has(role))
+    ? useGetListOfRequestsEventsQuery(graphqlRequestClient,{})
+    : useGetListOfRequestsEventsByUserIdQuery(graphqlRequestClient,{
+      input: {
+        userId: authStore.user.id ? authStore.user.id : ''
+      }
     })
-    toast.promise(examplePromise, {
-      success: { title: 'Promise resolved', description: 'Looks great', position:'bottom-right' },
-      error: { title: 'Promise rejected', description: 'Something wrong', position:'bottom-right' },
-      loading: { title: 'Promise pending', description: 'Please wait',position:'bottom-right' },
-    })
+
+
+  const handleCreateClick = () => {
+    setIsCreateModalOpen(true);
   };
 
-  const handleEditUserClick = (user) => {
-    console.log('user', user)
-    setSelectedUserForEdit(user);
-    setIsEditUserModalOpen(true);
+  const handleEditClick = (data:any) => {
+    setSelectedForEdit(data);
+    setIsEditModalOpen(true);
   };
 
-  const handleEditUser = (editedUserData) => {
-    // Implement the logic to update the user data on the server or state
-    console.log('Edited User Data:', editedUserData);
-    setIsEditUserModalOpen(false);
-  };
-
-  const { data } = useGetListOfRequestsEventsQuery(graphqlRequestClient,{});
-
+  console.log(data)
   const mappedData = React.useMemo(() => {
-    if (data && data.getListOfRequestsEvents) {
-      console.log(data.getListOfRequestsEvents)
-      return data.getListOfRequestsEvents.map(item => ({
-        id: item.id,
-        title: item.title,
-        status: item.status,
-        user: item.requestedBy?.user_name,
-      }));
-    }
-    return [];
+    if (!data) return [];
+
+    return ('getListOfRequestsEvents' in data
+      ? data.getListOfRequestsEvents
+      : data.getListOfRequestsEventsByUserId
+    ).map((item) => ({
+      id: item.id,
+      title: item.title,
+      status: item.status,
+      user: item.requestedBy?.user_name,
+    }));
   }, [data]);
 
   const filteredData = React.useMemo(() => {
@@ -96,7 +87,7 @@ function index() {
   const { colorMode } = useColorMode();
   return (
       <Box margin="20">
-          <Heading marginBottom="2" size="xl">Usuarios</Heading>
+          <Heading marginBottom="2" size="xl">Solicitudes de Eventos</Heading>
           <Text>En esta pantalla podras visualizar los roles y informacion relacionadas. Tambien la creacion y edicion de usuarios.</Text>
           <HStack justifyContent="space-between" marginY="10">
               <Box width="full">
@@ -108,27 +99,27 @@ function index() {
                       placeholder="Search..."
                       width="160"
                     />
-                  <Button onClick={handleCreateUserClick} colorScheme={colorMode === 'light' ? 'pink': 'blue'} variant="solid">
+                  <Button onClick={handleCreateClick} colorScheme={colorMode === 'light' ? 'pink': 'blue'} variant="solid">
                     Crear Solicitud
                   </Button>
                 </HStack>
 
-              <EditUserModal
+              <EditRequestEventModal
                 initialRef={initialRef}
-                isOpen={isEditUserModalOpen}
-                handleEdit={handleEditUser}
-                onClose={() => setIsEditUserModalOpen(false)}
-                userData={selectedUserForEdit}
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                data={selectedForEdit}
+                refetch={RefetchRequestsEvents}
               />
 
-              <CreateUserModal
+              <CreateRequestEventModal
                 initialRef={initialRef}
-                isOpen={isCreateUserModalOpen}
-                handleCreate={() => handleCreateUser}
-                onClose={() => setIsCreateUserModalOpen(false)}
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                refetch={RefetchRequestsEvents}
               />
 
-              <DataTable data={filteredData} columns={columns} onEdit={handleEditUserClick} />
+              <DataTable data={filteredData} columns={columns} onEdit={handleEditClick} />
               </Box>
           </HStack>
       </Box>
