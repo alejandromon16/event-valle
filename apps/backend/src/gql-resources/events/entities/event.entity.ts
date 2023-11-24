@@ -1,5 +1,7 @@
 import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { EventStatus } from "@prisma/client";
+import { EventStatus, RequestEvent } from "@prisma/client";
+import { RequestEventEntity } from "../../requests-events/entities/request-event.entity";
+import { UserEntity } from "../../users/entities/user.entity";
 
 @ObjectType()
 export class EventEntity {
@@ -54,6 +56,9 @@ export class EventEntity {
 
   @Field(() => Float, { nullable: true })
   latitud: number | null;
+
+  @Field(() => RequestEventEntity, { nullable: true})
+  requestEvent: RequestEvent | null
 
 }
 

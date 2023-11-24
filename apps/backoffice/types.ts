@@ -47,8 +47,14 @@ export type CreateEventInput = {
 };
 
 export type CreateRequestEventInput = {
+  address: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['String']['input']>;
+  description: Scalars['String']['input'];
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  locationName: Scalars['String']['input'];
   requestedById: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+  subtitle: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
@@ -58,7 +64,6 @@ export type CreateRoleInput = {
 };
 
 export type CreateUserInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
   email: Scalars['String']['input'];
   last_name: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -80,6 +85,7 @@ export type EventEntity = {
   locationName: Scalars['String']['output'];
   longitud?: Maybe<Scalars['Float']['output']>;
   principalImage: Scalars['String']['output'];
+  requestEvent?: Maybe<RequestEventEntity>;
   startDate: Scalars['DateTime']['output'];
   status: EventStatus;
   subtitle: Scalars['String']['output'];
@@ -98,7 +104,20 @@ export type FindRoleByNameInput = {
   name: RoleType;
 };
 
+export type GetListByRequesterIdInput = {
+  requesterId: Scalars['String']['input'];
+};
+
+export type GetRequestEventByIdInput = {
+  requestEventId: Scalars['String']['input'];
+};
+
 export type GetRequestsEventsByUserIdInput = {
+  userId: Scalars['String']['input'];
+};
+
+export type LikedEventInput = {
+  eventId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -123,17 +142,26 @@ export type MeEntity = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addLike: EventEntity;
   assignRolesToUser: UserEntity;
   createEvent: EventEntity;
   createRequestEvent: RequestEventEntity;
   createRole: RoleEntity;
   createUser: UserEntity;
   login: UserEntity;
+  removeLike: EventEntity;
   removeUser: UserEntity;
   requestPasswordReset: UserEntity;
   resetPassword: UserEntity;
+  saveEventByUser: EventEntity;
+  unSaveEventByUser: EventEntity;
   updateUser: UserEntity;
   validatePasswordResetToken: ValidatePasswordResetTokenEntity;
+};
+
+
+export type MutationAddLikeArgs = {
+  likedEventInput: LikedEventInput;
 };
 
 
@@ -167,6 +195,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationRemoveLikeArgs = {
+  likedEventInput: LikedEventInput;
+};
+
+
 export type MutationRemoveUserArgs = {
   id: Scalars['String']['input'];
 };
@@ -179,6 +212,16 @@ export type MutationRequestPasswordResetArgs = {
 
 export type MutationResetPasswordArgs = {
   resetPasswordInput: ResetPasswordInput;
+};
+
+
+export type MutationSaveEventByUserArgs = {
+  saveEventInput: SaveEventInput;
+};
+
+
+export type MutationUnSaveEventByUserArgs = {
+  saveEventInput: SaveEventInput;
 };
 
 
@@ -195,10 +238,12 @@ export type Query = {
   __typename?: 'Query';
   findRoleByName: RoleEntity;
   getListOfEvents: Array<EventEntity>;
+  getListOfEventsByRequesterId: Array<EventEntity>;
   getListOfEventsForThisMonth: Array<EventEntity>;
   getListOfEventsForThisWeek: Array<EventEntity>;
   getListOfRequestsEvents: Array<RequestEventEntity>;
   getListOfRequestsEventsByUserId: Array<RequestEventEntity>;
+  getRequestEventById: RequestEventEntity;
   listUsers: Array<UserEntity>;
   logout: LogoutEntity;
   me: MeEntity;
@@ -212,8 +257,18 @@ export type QueryFindRoleByNameArgs = {
 };
 
 
+export type QueryGetListOfEventsByRequesterIdArgs = {
+  getListOfEventsByRequesterIdInput: GetListByRequesterIdInput;
+};
+
+
 export type QueryGetListOfRequestsEventsByUserIdArgs = {
   getRequestsEventsByUserId: GetRequestsEventsByUserIdInput;
+};
+
+
+export type QueryGetRequestEventByIdArgs = {
+  getRequestEventById: GetRequestEventByIdInput;
 };
 
 
@@ -223,10 +278,18 @@ export type QueryRetrieveUserArgs = {
 
 export type RequestEventEntity = {
   __typename?: 'RequestEventEntity';
+  address: Scalars['String']['output'];
+  approvedBy?: Maybe<UserEntity>;
   createdAt?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['String']['output'];
+  locationDetail?: Maybe<Scalars['String']['output']>;
+  locationName: Scalars['String']['output'];
   requestedBy?: Maybe<UserEntity>;
+  startDate: Scalars['DateTime']['output'];
   status: RequestEventStatus;
+  subtitle: Scalars['String']['output'];
   title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
@@ -267,13 +330,18 @@ export enum RoleType {
   ContentApprover = 'CONTENT_APPROVER',
   ContentPublisher = 'CONTENT_PUBLISHER',
   ContentVisulizer = 'CONTENT_VISULIZER',
+  Marketing = 'MARKETING',
   RequestApprover = 'REQUEST_APPROVER',
   SuperAdmin = 'SUPER_ADMIN',
   User = 'USER'
 }
 
+export type SaveEventInput = {
+  eventId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
 export type UpdateUserInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   last_name?: InputMaybe<Scalars['String']['input']>;
@@ -318,7 +386,7 @@ export type GetUsersQuery = { __typename?: 'Query', listUsers: Array<{ __typenam
 export type GetListOfRequestsEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetListOfRequestsEventsQuery = { __typename?: 'Query', getListOfRequestsEvents: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
+export type GetListOfRequestsEventsQuery = { __typename?: 'Query', getListOfRequestsEvents: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, createdAt?: string | null, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
 
 export type LogoutQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -363,6 +431,25 @@ export type GetListOfRequestsEventsByUserIdQueryVariables = Exact<{
 
 export type GetListOfRequestsEventsByUserIdQuery = { __typename?: 'Query', getListOfRequestsEventsByUserId: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, createdAt?: string | null, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
 
+export type GetListOfEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetListOfEventsQuery = { __typename?: 'Query', getListOfEvents: Array<{ __typename?: 'EventEntity', address: string, createdAt: string, description: string, endDate?: any | null, id: string, images: Array<string>, latitud?: number | null, locationDetail?: string | null, locationName: string, longitud?: number | null, principalImage: string, startDate: any, status: EventStatus, subtitle: string, tags: Array<string>, title: string, updatedAt: string, requestEvent?: { __typename?: 'RequestEventEntity', id: string, approvedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null, requestedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null } | null }> };
+
+export type GetRequestEventByIdQueryVariables = Exact<{
+  input: GetRequestEventByIdInput;
+}>;
+
+
+export type GetRequestEventByIdQuery = { __typename?: 'Query', getRequestEventById: { __typename?: 'RequestEventEntity', id: string, title: string, subtitle: string, description: string, startDate: any, endDate?: any | null, locationName: string, locationDetail?: string | null, address: string, createdAt?: string | null, status: RequestEventStatus, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, last_name: string, user_name: string, email: string } | null } };
+
+export type GetListOfEventByRequesterIdQueryVariables = Exact<{
+  input: GetListByRequesterIdInput;
+}>;
+
+
+export type GetListOfEventByRequesterIdQuery = { __typename?: 'Query', getListOfEventsByRequesterId: Array<{ __typename?: 'EventEntity', address: string, createdAt: string, description: string, endDate?: any | null, id: string, images: Array<string>, latitud?: number | null, locationDetail?: string | null, locationName: string, longitud?: number | null, principalImage: string, startDate: any, status: EventStatus, subtitle: string, tags: Array<string>, title: string, updatedAt: string, requestEvent?: { __typename?: 'RequestEventEntity', id: string, approvedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null, requestedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null } | null }> };
+
 
 
 export const GetUsersDocument = `
@@ -406,6 +493,7 @@ export const GetListOfRequestsEventsDocument = `
     id
     status
     title
+    createdAt
     requestedBy {
       id
       name
@@ -625,5 +713,156 @@ export const useGetListOfRequestsEventsByUserIdQuery = <
     return useQuery<GetListOfRequestsEventsByUserIdQuery, TError, TData>(
       ['GetListOfRequestsEventsByUserId', variables],
       fetcher<GetListOfRequestsEventsByUserIdQuery, GetListOfRequestsEventsByUserIdQueryVariables>(client, GetListOfRequestsEventsByUserIdDocument, variables, headers),
+      options
+    )};
+
+export const GetListOfEventsDocument = `
+    query GetListOfEvents {
+  getListOfEvents {
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent {
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+export const useGetListOfEventsQuery = <
+      TData = GetListOfEventsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetListOfEventsQueryVariables,
+      options?: UseQueryOptions<GetListOfEventsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetListOfEventsQuery, TError, TData>(
+      variables === undefined ? ['GetListOfEvents'] : ['GetListOfEvents', variables],
+      fetcher<GetListOfEventsQuery, GetListOfEventsQueryVariables>(client, GetListOfEventsDocument, variables, headers),
+      options
+    )};
+
+export const GetRequestEventByIdDocument = `
+    query GetRequestEventById($input: GetRequestEventByIdInput!) {
+  getRequestEventById(getRequestEventById: $input) {
+    id
+    title
+    subtitle
+    description
+    startDate
+    endDate
+    locationName
+    locationDetail
+    address
+    createdAt
+    status
+    requestedBy {
+      id
+      name
+      last_name
+      user_name
+      email
+    }
+  }
+}
+    `;
+
+export const useGetRequestEventByIdQuery = <
+      TData = GetRequestEventByIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetRequestEventByIdQueryVariables,
+      options?: UseQueryOptions<GetRequestEventByIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetRequestEventByIdQuery, TError, TData>(
+      ['GetRequestEventById', variables],
+      fetcher<GetRequestEventByIdQuery, GetRequestEventByIdQueryVariables>(client, GetRequestEventByIdDocument, variables, headers),
+      options
+    )};
+
+export const GetListOfEventByRequesterIdDocument = `
+    query GetListOfEventByRequesterId($input: GetListByRequesterIdInput!) {
+  getListOfEventsByRequesterId(getListOfEventsByRequesterIdInput: $input) {
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent {
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+export const useGetListOfEventByRequesterIdQuery = <
+      TData = GetListOfEventByRequesterIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetListOfEventByRequesterIdQueryVariables,
+      options?: UseQueryOptions<GetListOfEventByRequesterIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetListOfEventByRequesterIdQuery, TError, TData>(
+      ['GetListOfEventByRequesterId', variables],
+      fetcher<GetListOfEventByRequesterIdQuery, GetListOfEventByRequesterIdQueryVariables>(client, GetListOfEventByRequesterIdDocument, variables, headers),
       options
     )};

@@ -31,20 +31,20 @@ class AppRouter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return BlocBuilder<AuthBloc, AuthState>(
-    //   builder: (context, state) {
-    //     if (state is AuthUnauthenticated) {
-    //       return SignInView();
-    //     } else if (state is AuthAuthenticated) {
-    //       // You can navigate to the main app screen or other authenticated screens here.
-    //       return HomeView();
-    //     } else {
-    //       return SignInView(); // Or any other initial screen.
-    //     }
-    //   }
-    // );
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthUnauthenticated) {
+          return SignInView();
+        } else if (state is AuthAuthenticated) {
+          // You can navigate to the main app screen or other authenticated screens here.
+          return HomeView();
+        } else {
+          return SignInView(); // Or any other initial screen.
+        }
+      }
+    );
 
-    return AppView();
+    // return AppView();
   }
 }
 

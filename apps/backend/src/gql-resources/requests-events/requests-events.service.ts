@@ -3,7 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../../common/services/database/prisma.service';
 import { WhatsappService } from '../../common/services/whatsapp/ultrasmg.service';
-import { CreateRequestEventInput } from './dto/request-event.input';
+import { CreateRequestEventInput, GetRequestEventByIdInput } from './dto/request-event.input';
 import { GetRequestsEventsByUserIdInput } from './dto/requests-event-list-user.input';
 import { RequestEventEntity } from './entities/request-event.entity';
 import { RequestEventCreatedEvent } from './events/request-event-created';
@@ -43,7 +43,7 @@ export class RequestsEventsService {
           }
         }
       },
-      include: { requestedBy: true}
+      include: { requestedBy: true, approvedBy: true}
     })
 
     this.eventEmitter.emit(
@@ -56,7 +56,7 @@ export class RequestsEventsService {
 
   async getList(): Promise<RequestEventEntity[]> {
     const requestsEvents = this.prisma.requestEvent.findMany({
-      include: { requestedBy: true }
+      include: { requestedBy: true, approvedBy: true }
     });
     return requestsEvents;
   }
@@ -67,33 +67,48 @@ export class RequestsEventsService {
         requestedById: userId
       },
       include: {
-        requestedBy: true
+        requestedBy: true,
+        approvedBy: true,
       }
     })
 
     return requestsEvents;
   }
 
-  @OnEvent('requestEvent.created')
-  async NotifyApprovers(payload: RequestEventCreatedEvent){
-    const approvers = await this.prisma.user.findMany({
+  async getById({requestEventId}: GetRequestEventByIdInput): Promise<RequestEventEntity> {
+    const requestEvent = this.prisma.requestEvent.findUnique({
       where: {
-        roles: {
-          some: {
-            name: "REQUEST_APPROVER"
-          }
-        }
+        id: requestEventId
+      },
+      include: {
+        requestedBy: true,
+        approvedBy: true,
       }
     })
 
-    for(const approver of approvers){
-      this.whatsappService.sendMessage({
-        to: `${approver.phone_number}`,
-        body: `
-          ${payload.user.name} ha enviado una solicitud para un Evento con titulo: ${payload.titleEvent}
-        `
-      })
-    }
+    return requestEvent;
   }
+
+  // @OnEvent('requestEvent.created')
+  // async NotifyApprovers(payload: RequestEventCreatedEvent){
+  //   const approvers = await this.prisma.user.findMany({
+  //     where: {
+  //       roles: {
+  //         some: {
+  //           name: "REQUEST_APPROVER"
+  //         }
+  //       }
+  //     }
+  //   })
+
+  //   for(const approver of approvers){
+  //     this.whatsappService.sendMessage({
+  //       to: `${approver.phone_number}`,
+  //       body: `
+  //         ${payload.user.name} ha enviado una solicitud para un Evento con titulo: ${payload.titleEvent}
+  //       `
+  //     })
+  //   }
+  // }
 
 }

@@ -1,21 +1,17 @@
 'use client'
-import React, { use, useState } from 'react';
-import { Box, Button, Heading, HStack, Input, InputGroup, InputLeftAddon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useColorMode, useToast } from '@chakra-ui/react';
-import { useGetListOfRequestsEventsByUserIdQuery, useGetListOfRequestsEventsQuery, useGetUsersQuery } from '../../../../types';
-import DataTable from '@/src/components/DataTable3';
+import React, { useState } from 'react';
+import { Box, Button, Heading, HStack, Input, Text, useColorMode } from '@chakra-ui/react';
+import { useGetListOfRequestsEventsByUserIdQuery, useGetListOfRequestsEventsQuery } from '../../../../types';
+import DataTable, { MenuItem } from '@/src/components/DataTable3';
 import graphqlRequestClient from '@/src/providers/graphql';
 import { useAuthStore } from '@/src/stores/authStore';
 import { RoleType } from '@prisma/client';
-import CreateRequestEventModal from '@/src/components/modals/requestEvent/create';
-import EditRequestEventModal from '@/src/components/modals/requestEvent/edit';
+import { useRouter } from 'next/navigation';
 
 function index() {
   const [filterInput, setFilterInput] = useState('');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedForEdit, setSelectedForEdit] = useState(null);
-  const initialRef = React.useRef(null)
   const authStore = useAuthStore();
+  const router = useRouter()
   const specialQueryRoles = new Set<RoleType>(['SUPER_ADMIN', 'REQUEST_APPROVER']);
   const { data, refetch: RefetchRequestsEvents } =  authStore.roles.some(role => specialQueryRoles.has(role))
     ? useGetListOfRequestsEventsQuery(graphqlRequestClient,{})
@@ -27,13 +23,21 @@ function index() {
 
 
   const handleCreateClick = () => {
-    setIsCreateModalOpen(true);
+    router.push('/admin/solicitudes/create')
   };
 
   const handleEditClick = (data:any) => {
-    setSelectedForEdit(data);
-    setIsEditModalOpen(true);
+    console.log(data)
+    router.push(`/admin/solicitudes/edit/${data.id}`)
   };
+
+  const handleRevisionClick = (data:any) => {
+    router.push(`/admin/solicitudes/revision/${data.id}`)
+  }
+
+  const handleDetailsClick = (data: any) => {
+    router.push(`/admin/solicitudes/details/${data.id}`)
+  }
 
   console.log(data)
   const mappedData = React.useMemo(() => {
@@ -47,6 +51,7 @@ function index() {
       title: item.title,
       status: item.status,
       user: item.requestedBy?.user_name,
+      createdAt: item.createdAt ? new Date(+item.createdAt).toLocaleString(): null,
     }));
   }, [data]);
 
@@ -65,8 +70,8 @@ function index() {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Id',
-        accessor: 'id', // User's name
+        Header: 'Creado',
+        accessor: 'createdAt',
       },
       {
         Header: 'Solicitado por',
@@ -74,15 +79,51 @@ function index() {
       },
       {
         Header: 'Titulo',
-        accessor: 'title', // User's email
+        accessor: 'title',
       },
       {
         Header: 'Status',
-        accessor: 'status', // User's creation date
+        accessor: 'status',
       },
     ],
     []
   );
+
+  const generateMenuItems = (onClick: (data: any) => void, additionalItems: MenuItem[] = []): MenuItem[] => [
+    ...additionalItems,
+    {
+      label: 'Detalles',
+      onClick,
+    },
+  ];
+
+  const menuItemsApprover: MenuItem[] = [
+    ...generateMenuItems((data) => handleDetailsClick(data),[
+      {
+        label: 'Revision',
+        onClick: (data) => handleRevisionClick(data),
+      }
+    ])
+  ]
+
+  const menuItemsRequester: MenuItem[] = [
+    ...generateMenuItems((data) => handleDetailsClick(data),[
+      {
+        label: 'Edit',
+        onClick: (data) => handleEditClick(data),
+      },
+    ])
+  ];
+
+  const getMenuItems = () => {
+    switch (true) {
+      case authStore.roles.some(role => role === 'REQUEST_APPROVER' || role === 'SUPER_ADMIN'):
+        return menuItemsApprover;
+      default:
+        return menuItemsRequester;
+    }
+  };
+  const menuItems = getMenuItems();
 
   const { colorMode } = useColorMode();
   return (
@@ -99,27 +140,19 @@ function index() {
                       placeholder="Search..."
                       width="160"
                     />
-                  <Button onClick={handleCreateClick} colorScheme={colorMode === 'light' ? 'pink': 'blue'} variant="solid">
-                    Crear Solicitud
-                  </Button>
+                  {!authStore.roles.some(role => role === 'REQUEST_APPROVER') && (
+                    <Button onClick={handleCreateClick} colorScheme={colorMode === 'light' ? 'pink': 'blue'} variant="solid">
+                      Crear Solicitud
+                    </Button>
+                  )}
+
                 </HStack>
 
-              <EditRequestEventModal
-                initialRef={initialRef}
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                data={selectedForEdit}
-                refetch={RefetchRequestsEvents}
+              <DataTable
+                data={filteredData}
+                columns={columns}
+                menuItems={menuItems}
               />
-
-              <CreateRequestEventModal
-                initialRef={initialRef}
-                isOpen={isCreateModalOpen}
-                onClose={() => setIsCreateModalOpen(false)}
-                refetch={RefetchRequestsEvents}
-              />
-
-              <DataTable data={filteredData} columns={columns} onEdit={handleEditClick} />
               </Box>
           </HStack>
       </Box>

@@ -9,7 +9,7 @@ class GraphQLClientSingleton {
   GraphQLClientSingleton._internal();
 
   static GraphQLClient getClient() {
-    final Link link = HttpLink('http://localhost:3000/graphql');
+    final Link link = HttpLink('https://solid-maisey-eventvalle.koyeb.app/graphql');
 
     return GraphQLClient(
       cache: GraphQLCache(),

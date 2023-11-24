@@ -34,10 +34,4 @@ export class CreateUserInput implements Prisma.UserCreateWithoutRolesInput, Pris
   @Field(() => String, { nullable: true })
   phone_number?: string | null | undefined
 
-  @IsNumber()
-  @IsOptional()
-  @Field(() => Int, { nullable: true })
-  createdAt?: string | Date | undefined
-  updatedAt?: string | Date | undefined
-
 }

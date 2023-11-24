@@ -20,6 +20,7 @@ query GetListOfRequestsEvents{
     id
     status
     title
+    createdAt
     requestedBy {
       id
       name
@@ -99,6 +100,103 @@ query GetListOfRequestsEventsByUserId($input:GetRequestsEventsByUserIdInput!){
       id
       name
       user_name
+    }
+  }
+}
+
+query GetListOfEvents {
+  getListOfEvents {
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent{
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy{
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+
+query GetRequestEventById($input:GetRequestEventByIdInput!){
+  getRequestEventById(getRequestEventById:$input){
+    id
+    title
+    subtitle
+    description
+    startDate
+    endDate
+    locationName
+    locationDetail
+    address
+    createdAt
+    status
+    requestedBy {
+    	id
+      name
+      last_name
+      user_name
+      email
+    }
+  }
+}
+
+query GetListOfEventByRequesterId($input:GetListByRequesterIdInput!){
+  getListOfEventsByRequesterId(getListOfEventsByRequesterIdInput:$input){
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent{
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy{
+        id
+        user_name
+        name
+        last_name
+      }
     }
   }
 }

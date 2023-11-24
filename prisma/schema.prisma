@@ -24,6 +24,7 @@ enum RoleType {
   CONTENT_PUBLISHER
   REQUEST_APPROVER
   CONTENT_VISULIZER
+  MARKETING
   USER
 }
 
@@ -83,6 +84,14 @@ model RequestEvent {
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   title         String             @default("Test Title")
+  subtitle       String
+  description    String
+  startDate      DateTime
+  endDate        DateTime?
+  locationName   String
+  locationDetail String?
+  address        String
+
   requestedById String
   requestedBy   User               @relation(name: "requestedBy", fields: [requestedById], references: [id])
   approvedById  String?

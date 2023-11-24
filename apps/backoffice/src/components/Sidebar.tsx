@@ -13,7 +13,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, router, activeNavItem: propActiveNavItem }) => {
   const { isOpen: isMobileSidebarOpen, onToggle: onMobileSidebarToggle } = useDisclosure();
-  const [activeNavItem, setActiveNavItem] = useState(propActiveNavItem); // Initialize with an empty string
+  const [activeNavItem, setActiveNavItem] = useState(propActiveNavItem);
   const { colorMode } = useColorMode();
 
   const handleNavItemClick = (navItem: string) => {
@@ -70,20 +70,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, router, activeNavIte
           </Button>
         ) : null}
 
-        {userRoles.includes(RoleType.Admin) || userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.RequestApprover) ? (
-          <Button
-            width="full"
-            justifyContent="left"
-            iconSpacing="4"
-            leftIcon={<SearchIcon />}
-            colorScheme={colorMode === "dark" ? 'gray' : 'whiteAlpha'}
-            variant={activeNavItem === 'solicitudes' ? 'solid' : 'ghost'}
-            onClick={() => handleNavItemClick('solicitudes')}
-          >
-            Solicitudes
-          </Button>
-        ) : null}
-
         {userRoles.includes(RoleType.SuperAdmin) ? (
           <Button
             width="full"
@@ -98,15 +84,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, router, activeNavIte
           </Button>
         ) : null}
 
-        {userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.ContentApprover)  ? (
+        {userRoles.includes(RoleType.Admin) || userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.RequestApprover) ? (
           <Button
             width="full"
             justifyContent="left"
             iconSpacing="4"
-            leftIcon={<EmailIcon />}
+            leftIcon={<SearchIcon />}
             colorScheme={colorMode === "dark" ? 'gray' : 'whiteAlpha'}
-            variant={activeNavItem === 'email' ? 'solid' : 'ghost'}
-            onClick={() => handleNavItemClick('email')}
+            variant={activeNavItem === 'solicitudes' ? 'solid' : 'ghost'}
+            onClick={() => handleNavItemClick('solicitudes')}
+          >
+            Solicitudes
+          </Button>
+        ) : null}
+
+        {userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.RequestApprover) || userRoles.includes(RoleType.Admin) ? (
+          <Button
+            width="full"
+            justifyContent="left"
+            iconSpacing="4"
+            leftIcon={<SearchIcon />}
+            colorScheme={colorMode === "dark" ? 'gray' : 'whiteAlpha'}
+            variant={activeNavItem === 'eventos' ? 'solid' : 'ghost'}
+            onClick={() => handleNavItemClick('eventos')}
           >
             Eventos
           </Button>

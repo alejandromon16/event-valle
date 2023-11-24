@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { RequestEventStatus, User } from "@prisma/client";
 import { IsOptional } from "class-validator";
 import { UserEntity } from "../../users/entities/user.entity";
@@ -16,6 +16,28 @@ export class RequestEventEntity {
   @Field(() => String)
   title: string
 
+  @Field(() => String)
+  subtitle: string;
+
+  @Field(() => String)
+  description: string;
+
+
+  @Field(() => Date)
+  startDate: Date;
+
+  @Field(() => Date, { nullable: true })
+  endDate: Date | null;
+
+  @Field(() => String)
+  locationName: string;
+
+  @Field(() => String, { nullable: true })
+  locationDetail: string | null;
+
+  @Field(() => String)
+  address: string;
+
   @IsOptional()
   @Field(() => String, {nullable: true})
   updatedAt!: Date
@@ -24,7 +46,10 @@ export class RequestEventEntity {
   status!: RequestEventStatus
 
   @Field(() => UserEntity, {nullable: true})
-  requestedBy: User | undefined
+  requestedBy: User | null
+
+  @Field(() => UserEntity, {nullable: true})
+  approvedBy: User | null
 }
 
 

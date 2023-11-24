@@ -2,13 +2,6 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   FormControl,
   FormLabel,
   Input,
@@ -19,10 +12,13 @@ import {
   InputGroup,
   Textarea,
   Box,
+  Heading,
+  Flex,
+  SimpleGrid,
 } from '@chakra-ui/react';
-import { string, z, ZodError } from 'zod';
+import { date, string, z, ZodError } from 'zod';
 import { DatePicker, Space } from 'antd';
-import type { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import DateTimePicker from './DateTimePicker';
 
 
 const { RangePicker } = DatePicker;
@@ -38,14 +34,12 @@ export enum InputFieldType {
 
 interface InputFieldConfig {
   type: InputFieldType;
-  options?: string[]; // For Select and MultiSelect
+  options?: string[];
 }
 
-interface FormModalProps<T extends z.ZodObject<any, any, any>> {
-  isOpen: boolean;
-  onClose: () => void;
+interface FormProps<T extends z.ZodObject<any, any, any>> {
+  onCancel: () => void;
   onSubmit: (data: z.infer<T>) => void;
-  initialRef: React.RefObject<HTMLInputElement>;
   schema: T;
   title: string;
   submitButtonText: string;
@@ -53,17 +47,15 @@ interface FormModalProps<T extends z.ZodObject<any, any, any>> {
   fieldConfig?: Record<string, InputFieldConfig>;
 }
 
-const FormModal = <T extends z.ZodObject<any, any, any>>({
-  isOpen,
-  onClose,
+const Form = <T extends z.ZodObject<any, any, any>>({
+  onCancel,
   onSubmit,
-  initialRef,
   schema,
   title,
   submitButtonText,
   formData,
   fieldConfig = {},
-}: FormModalProps<T>) => {
+}: FormProps<T>) => {
   const [formState, setFormState] = useState(formData || ({} as z.infer<T>));
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
@@ -71,13 +63,30 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
     setFormState(formData || ({} as z.infer<T>));
   }, [formData]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, isMultiSelect = false) => {
-    const { name, value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, isMultiSelect = false) => {
+    const { name, value } = e.currentTarget;
+
+    if (isMultiSelect) {
+      setFormState((prevData) => ({
+        ...prevData,
+        [name]: (value.split(',') as string[]),
+      }));
+    } else {
+      setFormState((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleDateChange = (date:string, name:string) => {
     setFormState((prevData) => ({
       ...prevData,
-      [name]: isMultiSelect ? (value.split(',') as string[]) : value,
+      [name]: date,
     }));
-  };
+  }
+
+
 
 
   const clearErrors = () => setErrors({});
@@ -93,10 +102,10 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
 
   const handleSubmit = () => {
     try {
+      console.log(formState)
       schema.parse(formState);
       clearErrors();
       onSubmit(formState);
-      onClose();
     } catch (error) {
       if (error instanceof ZodError) {
         handleValidationErrors(error);
@@ -107,7 +116,6 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderInputField = (field: z.ZodTypeAny, key: string) => {
     const label: string = schema.shape.labels?.[key] || key;
 
-    // Check if there is a configuration for the current field
     const config = fieldConfig[key];
     const fieldType = config?.type || InputFieldType.Text;
 
@@ -132,24 +140,24 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderDateField = (label: string, key: string) => {
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
-        <Space direction="vertical">
-          <RangePicker
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
-            style={{zIndex:20}}
-          />
-        </Space>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>
+          {label}
+        </FormLabel>
+        <DateTimePicker
+          name={key}
+          onChange={handleDateChange}
+          value={formState[key]}
+        />
         <Text color="red.500">{errors[key]}</Text>
       </FormControl>
-    )
+    );
   };
 
   const renderPhoneField = (label: string, key: string) => {
 
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>{label}</FormLabel>
         <InputGroup>
           <InputLeftAddon children='+591' />
           <Input name={key} onChange={handleChange} value={formState[key]} type='tel' placeholder='phone number' />
@@ -162,7 +170,7 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderTextAreaField = (label: string, key: string) => {
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>{label}</FormLabel>
         <Textarea name={key} value={formState[key]} onChange={(e) => handleChange(e as ChangeEvent<HTMLTextAreaElement>)} placeholder='Descripcion del evento' />
         <Text color="red.500">{errors[key]}</Text>
       </FormControl>
@@ -174,7 +182,7 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderTextField = (label: string, key: string) => {
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>{label}</FormLabel>
         <Input name={key} type="text" value={formState[key]} onChange={handleChange} />
         <Text color="red.500">{errors[key]}</Text>
       </FormControl>
@@ -185,7 +193,7 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderSelectField = (label: string, key: string, options: string[]) => {
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>{label}</FormLabel>
         <Select name={key} value={formState[key]} onChange={(e) => handleChange(e)}>
           {options.map((option) => (
             <option key={option} value={option}>
@@ -201,7 +209,7 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   const renderMultiSelectField = (label: string, key: string, options: string[]) => {
     return (
       <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
-        <FormLabel textTransform={'capitalize'}>{label}</FormLabel>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>{label}</FormLabel>
         <Select
           name={key}
           value={(formState[key] as string[]).join(',')}
@@ -228,23 +236,41 @@ const FormModal = <T extends z.ZodObject<any, any, any>>({
   };
 
   return (
-    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent maxHeight={'70vh'} zIndex="base" >
-        <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody overflow="auto">{renderFormFields()}</ModalBody>
-        <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>
+    <Flex
+      marginTop="10"
+      marginBottom="20"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Box
+        backgroundColor="white"
+        paddingX="20"
+        paddingY="10"
+        borderRadius="md"
+        boxShadow="md"
+        width="60vw"
+      >
+        <Heading fontSize="28" textAlign="center" marginBottom="4">
+          {title}
+        </Heading>
+        <Box>
+          <SimpleGrid
+            spacingY="5"
+          >
+            {renderFormFields()}
+          </SimpleGrid>
+        </Box>
+        <Flex justifyContent="flex-end" marginTop="4">
+          <Button variant="ghost" onClick={onCancel} marginRight="2">
             Cancel
           </Button>
           <Button colorScheme="pink" onClick={handleSubmit}>
             {submitButtonText}
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Flex>
+      </Box>
+    </Flex>
   );
 };
 
-export default FormModal;
+export default Form;

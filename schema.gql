@@ -23,8 +23,14 @@ input CreateEventInput {
 }
 
 input CreateRequestEventInput {
+  address: String!
   createdAt: String
+  description: String!
+  endDate: String
+  locationName: String!
   requestedById: String!
+  startDate: String!
+  subtitle: String!
   title: String!
 }
 
@@ -34,7 +40,6 @@ input CreateRoleInput {
 }
 
 input CreateUserInput {
-  createdAt: Int
   email: String!
   last_name: String!
   name: String!
@@ -60,6 +65,7 @@ type EventEntity {
   locationName: String!
   longitud: Float
   principalImage: String!
+  requestEvent: RequestEventEntity
   startDate: DateTime!
   status: EventStatus!
   subtitle: String!
@@ -78,7 +84,20 @@ input FindRoleByNameInput {
   name: RoleType!
 }
 
+input GetListByRequesterIdInput {
+  requesterId: String!
+}
+
+input GetRequestEventByIdInput {
+  requestEventId: String!
+}
+
 input GetRequestsEventsByUserIdInput {
+  userId: String!
+}
+
+input LikedEventInput {
+  eventId: String!
   userId: String!
 }
 
@@ -101,15 +120,19 @@ type MeEntity {
 }
 
 type Mutation {
+  addLike(likedEventInput: LikedEventInput!): EventEntity!
   assignRolesToUser(assignRolesToUser: AssignRolesToUserInput!): UserEntity!
   createEvent(createEventInput: CreateEventInput!): EventEntity!
   createRequestEvent(createRequestEventInput: CreateRequestEventInput!): RequestEventEntity!
   createRole(createRoleInput: CreateRoleInput!): RoleEntity!
   createUser(createUserInput: CreateUserInput!): UserEntity!
   login(loginInput: LoginInput!): UserEntity!
+  removeLike(likedEventInput: LikedEventInput!): EventEntity!
   removeUser(id: String!): UserEntity!
   requestPasswordReset(requestPasswordResetInput: RequestPasswordResetInput!): UserEntity!
   resetPassword(resetPasswordInput: ResetPasswordInput!): UserEntity!
+  saveEventByUser(saveEventInput: SaveEventInput!): EventEntity!
+  unSaveEventByUser(saveEventInput: SaveEventInput!): EventEntity!
   updateUser(updateUserInput: UpdateUserInput!): UserEntity!
   validatePasswordResetToken(validatePasswordResetTokenInput: ValidatePasswordResetTokenInput!): ValidatePasswordResetTokenEntity!
 }
@@ -117,10 +140,12 @@ type Mutation {
 type Query {
   findRoleByName(findRoleByName: FindRoleByNameInput!): RoleEntity!
   getListOfEvents: [EventEntity!]!
+  getListOfEventsByRequesterId(getListOfEventsByRequesterIdInput: GetListByRequesterIdInput!): [EventEntity!]!
   getListOfEventsForThisMonth: [EventEntity!]!
   getListOfEventsForThisWeek: [EventEntity!]!
   getListOfRequestsEvents: [RequestEventEntity!]!
   getListOfRequestsEventsByUserId(getRequestsEventsByUserId: GetRequestsEventsByUserIdInput!): [RequestEventEntity!]!
+  getRequestEventById(getRequestEventById: GetRequestEventByIdInput!): RequestEventEntity!
   listUsers: [UserEntity!]!
   logout: LogoutEntity!
   me: MeEntity!
@@ -129,10 +154,18 @@ type Query {
 }
 
 type RequestEventEntity {
+  address: String!
+  approvedBy: UserEntity
   createdAt: String
+  description: String!
+  endDate: DateTime
   id: String!
+  locationDetail: String
+  locationName: String!
   requestedBy: UserEntity
+  startDate: DateTime!
   status: RequestEventStatus!
+  subtitle: String!
   title: String!
   updatedAt: String
 }
@@ -173,13 +206,18 @@ enum RoleType {
   CONTENT_APPROVER
   CONTENT_PUBLISHER
   CONTENT_VISULIZER
+  MARKETING
   REQUEST_APPROVER
   SUPER_ADMIN
   USER
 }
 
+input SaveEventInput {
+  eventId: String!
+  userId: String!
+}
+
 input UpdateUserInput {
-  createdAt: Int
   email: String
   id: String!
   last_name: String

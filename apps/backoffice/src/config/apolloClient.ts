@@ -1,5 +1,4 @@
 "use client";
-
 import {
   ApolloLink,
   HttpLink,
@@ -12,7 +11,7 @@ import {
 
 const makeClient = () => {
   const httpLink = new HttpLink({
-      uri: "http://localhost:3000/graphql",
+      uri: process.env.APOLLO_URI,
       credentials: 'include'
   });
 

@@ -53,3 +53,9 @@ export class CreateEventInput implements Prisma.EventUncheckedCreateWithoutPubli
   @Field(() => String)
   requestEventId:string;
 }
+
+@InputType()
+export class GetListByRequesterIdInput {
+  @Field(() => String)
+  requesterId: string;
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../../common/services/database/prisma.service';
 import { WhatsappService } from '../../common/services/whatsapp/ultrasmg.service';
-import { CreateEventInput } from './dto/create-event.input';
+import { CreateEventInput, GetListByRequesterIdInput } from './dto/create-event.input';
 import { LikedEventInput } from './dto/liked-event.input';
 import { PublishEventInput } from './dto/publish-event.input';
 import { SaveEventInput } from './dto/save-event.input';
@@ -27,6 +27,9 @@ export class EventsService {
             id: requestEventId
           }
         }
+      },
+      include: {
+        requestEvent:true,
       },
     })
 
@@ -60,6 +63,9 @@ export class EventsService {
       where:{
         id: publishEventInput.eventId,
       },
+      include: {
+        requestEvent: true,
+      },
       data: {
         status: 'PUBLISH',
         publishedBy: {
@@ -74,7 +80,30 @@ export class EventsService {
   }
 
   async list(): Promise<EventEntity[]> {
-    const events = await this.prisma.event.findMany();
+    const events = await this.prisma.event.findMany({
+      include: {
+        requestEvent: {
+          include: {
+            requestedBy: true,
+          }
+        },
+      },
+    });
+
+    return events;
+  }
+
+  async getListByRequesterId({requesterId}: GetListByRequesterIdInput): Promise<EventEntity[]>{
+    const events = await this.prisma.event.findMany({
+      where: {
+        requestEvent: {
+          requestedById: requesterId
+        }
+      },
+      include: {
+        requestEvent: true
+      }
+    })
 
     return events;
   }
@@ -90,7 +119,10 @@ export class EventsService {
           gte: today,
           lt: nextWeek,
         },
-      }
+      },
+      include: {
+        requestEvent: true,
+      },
     });
 
     return events;
@@ -101,6 +133,9 @@ export class EventsService {
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
     const events = await this.prisma.event.findMany({
+      include: {
+        requestEvent: true,
+      },
       where: {
         startDate: {
           gte: today,
@@ -130,6 +165,9 @@ export class EventsService {
 
     const updatedEvent = await this.prisma.event.update({
       where: { id: eventId },
+      include: {
+        requestEvent: true,
+      },
       data: {
         likedBy: {
           connect: { id: userId },
@@ -157,6 +195,9 @@ export class EventsService {
 
     const updatedEvent = await this.prisma.event.update({
       where: { id: eventId },
+      include: {
+        requestEvent: true,
+      },
       data: {
         likedBy: {
           disconnect: { id: userId },
@@ -184,6 +225,9 @@ export class EventsService {
 
     const updatedEvent = await this.prisma.event.update({
       where: { id: eventId },
+      include: {
+        requestEvent: true,
+      },
       data: {
         savedBy: {
           connect: { id: userId },
@@ -211,6 +255,9 @@ export class EventsService {
 
     const updatedEvent = await this.prisma.event.update({
       where: { id: eventId },
+      include: {
+        requestEvent: true,
+      },
       data: {
         savedBy: {
           disconnect: { id: userId },

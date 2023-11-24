@@ -20,13 +20,18 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
+export interface MenuItem {
+  label: string;
+  onClick: (item: any) => void;
+}
+
 interface DataTableProps {
   data: any[];
   columns: any[];
-  onEdit: (item: any) => void;
+  menuItems: MenuItem[];
 }
 
-function DataTable({ columns, data, onEdit }: DataTableProps) {
+function DataTable({ columns, data, onEdit, menuItems= [] }: DataTableProps) {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   const {
@@ -123,10 +128,12 @@ function DataTable({ columns, data, onEdit }: DataTableProps) {
                         <ChevronDownIcon />
                       </MenuButton>
                       <MenuList key="menu-list">
-                        <MenuItem onClick={() => handleEditClick(row)} key={`edit-item-${rowIndex}`}>
-                          Editar
+                      {menuItems.map((menuItem, index) => (
+                        <MenuItem onClick={() => menuItem.onClick(row.original)} key={`custom-menu-item-${index}`}>
+                          {menuItem.label}
                         </MenuItem>
-                      </MenuList>
+                      ))}
+                    </MenuList>
                     </Menu>
                   </HStack>
                 </Td>
