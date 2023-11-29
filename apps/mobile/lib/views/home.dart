@@ -1,5 +1,3 @@
-import 'package:eventvalle/views/profile.dart';
-import 'package:eventvalle/widgets/BottomNavBar.dart';
 import 'package:eventvalle/widgets/SkeletonCard.dart';
 import 'package:flutter/material.dart';
 import 'package:eventvalle/data/models/event.dart';

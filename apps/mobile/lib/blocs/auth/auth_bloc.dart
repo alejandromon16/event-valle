@@ -13,9 +13,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthCheckRequested>(onAuthCheckRequested);
     on<AuthSignInWithEmailPassword>(onSignInWithEmailPassword);
     on<AuthSignOut>(onSignOut);
+    on<AuthRegisterUser>(onRegisterUser);
+    on<ChangeAuthState>(onChangeAuthState);
   }
 
-  void onAuthCheckRequested(AuthCheckRequested event, Emitter<AuthState> emit) async {
+  void onAuthCheckRequested(
+      AuthCheckRequested event, Emitter<AuthState> emit) async {
     // try {
     //   final isAuthenticated = true;
     //   if (isAuthenticated) {
@@ -31,9 +34,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void onSignInWithEmailPassword(
       AuthSignInWithEmailPassword event, Emitter<AuthState> emit) async {
     try {
-
       print(event.email);
-      UserEntity? user = await _authService.signInWithEmailPassword(event.email, event.password);
+      UserEntity? user = await _authService.signInWithEmailPassword(
+          event.email, event.password);
 
       if (user != null) {
         print('succes login suc ${user.name}');
@@ -50,5 +53,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void onSignOut(AuthSignOut event, Emitter<AuthState> emit) async {
     emit(AuthUnauthenticated());
+  }
+
+  void onRegisterUser(AuthRegisterUser event, Emitter<AuthState> emit) async {
+    try {
+      UserEntity? user = await _authService.registerUser(
+        event.email,
+        event.lastName,
+        event.name,
+        event.password,
+        phoneNumber: event.phoneNumber,
+        userName: event.userName,
+      );
+
+      if (user != null) {
+        emit(AuthRegisterUserSuccess(user));
+        emit(AuthAuthenticated(userId: user.id));
+      } else {
+        emit(AuthRegisterUserFailure('Error registering user'));
+      }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
+  }
+
+  void onChangeAuthState(ChangeAuthState event, Emitter<AuthState> emit) {
+    emit(event.newState);
   }
 }

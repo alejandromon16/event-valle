@@ -1,10 +1,9 @@
 import 'package:eventvalle/blocs/auth/auth_bloc.dart';
 import 'package:eventvalle/views/app.dart';
-import 'package:eventvalle/views/home.dart';
 import 'package:eventvalle/views/login.dart';
+import 'package:eventvalle/views/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,20 +30,20 @@ class AppRouter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthUnauthenticated) {
-          return SignInView();
-        } else if (state is AuthAuthenticated) {
-          // You can navigate to the main app screen or other authenticated screens here.
-          return HomeView();
-        } else {
-          return SignInView(); // Or any other initial screen.
-        }
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthUnauthenticated) {
+        return SignInView();
+      } else if (state is AuthAuthenticated ||
+          state is AuthRegisterUserSuccess) {
+        // You can navigate to the main app screen or other authenticated screens here.
+        return AppView();
+      } else if (state is AuthRegisterNewUser) {
+        return RegisterView();
+      } else {
+        return SignInView(); // Or any other initial screen.
       }
-    );
+    });
 
     // return AppView();
   }
 }
-

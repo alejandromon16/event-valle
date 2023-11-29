@@ -3,17 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 class SignInView extends StatefulWidget {
-  const SignInView({super.key });
+  const SignInView({super.key});
 
   @override
   State<SignInView> createState() => _SignInViewState();
 }
 
-class _SignInViewState extends State<SignInView>{
+class _SignInViewState extends State<SignInView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  bool emailFocus = false;
+  bool passwordFocus = false;
+  String error = "";
+
+  @override
+  void initState() {
+    super.initState();
+    emailFocusNode.addListener(() {
+      setState(() {
+        emailFocus = emailFocusNode.hasFocus;
+      });
+    });
+    passwordFocusNode.addListener(() {
+      setState(() {
+        passwordFocus = passwordFocusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +54,9 @@ class _SignInViewState extends State<SignInView>{
             children: [
               Center(
                 child: Image.asset(
-                    'assets/logo1.png',
-                    height: 190,
-                    width: 230,
+                  'assets/logo1.png',
+                  height: 190,
+                  width: 230,
                 ),
               ),
               const SizedBox(height: 20.0),
@@ -47,7 +73,7 @@ class _SignInViewState extends State<SignInView>{
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: Colors.grey.shade800,
+                    color: emailFocus ? Colors.pink : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -57,6 +83,7 @@ class _SignInViewState extends State<SignInView>{
                     Expanded(
                       child: TextField(
                         controller: emailController,
+                        focusNode: emailFocusNode,
                         decoration: InputDecoration(
                           hintText: 'Correo Electrónico',
                           border: InputBorder.none,
@@ -72,7 +99,7 @@ class _SignInViewState extends State<SignInView>{
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: Colors.grey.shade800,
+                    color: passwordFocus ? Colors.pink : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -82,6 +109,7 @@ class _SignInViewState extends State<SignInView>{
                     Expanded(
                       child: TextField(
                         controller: passwordController,
+                        focusNode: passwordFocusNode,
                         obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Contraseña',
@@ -92,34 +120,28 @@ class _SignInViewState extends State<SignInView>{
                   ],
                 ),
               ),
-              const SizedBox(height: 20.0),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    print("Olvidaste tu contraseña?");
-                  },
-                  child: const Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(
-                      color: Colors.brown,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 12.0),
+              Text(error, style: TextStyle(color: Colors.red)),
+              const SizedBox(height: 12.0),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<AuthBloc>().add(AuthSignInWithEmailPassword(
-                      email: emailController.text,
-                      password: passwordController.text,
-                    ));
+                    if (emailController.text.isNotEmpty &&
+                        emailController.text.endsWith("univalle.edu")) {
+                      context.read<AuthBloc>().add(AuthSignInWithEmailPassword(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          ));
+                    } else {
+                      setState(() {
+                        error = "El correo debe ser del dominio univalle.edu";
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF993366),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
@@ -156,8 +178,8 @@ class _SignInViewState extends State<SignInView>{
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white,
                     onPrimary: Colors.black,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
@@ -178,6 +200,9 @@ class _SignInViewState extends State<SignInView>{
               Center(
                 child: GestureDetector(
                   onTap: () {
+                    context
+                        .read<AuthBloc>()
+                        .add(ChangeAuthState(AuthRegisterNewUser()));
                   },
                   child: const Text(
                     'No tienes una cuenta? Crear Cuenta',
@@ -185,7 +210,6 @@ class _SignInViewState extends State<SignInView>{
                       color: Colors.brown,
                       fontSize: 16.0,
                     ),
-
                   ),
                 ),
               ),

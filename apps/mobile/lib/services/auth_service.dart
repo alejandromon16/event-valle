@@ -48,4 +48,54 @@ class AuthService {
       throw Exception(e.toString());
     }
   }
+  Future<UserEntity?> registerUser(String email, String lastName, String name, String password, {String? phoneNumber, String? userName}) async {
+    try {
+      final graphQLClient = GraphQLClientSingleton.getClient();
+
+      final userInput = CreateUserInput(
+        email: email,
+        last_name: lastName,
+        name: name,
+        password: password,
+        phone_number: phoneNumber,
+        user_name: userName ?? '',  
+      );
+
+      final result = await graphQLClient.mutate(
+        MutationOptions(
+          document: gql('''
+            mutation Register(\$input: CreateUserInput!) {
+              createUser(createUserInput: \$input) {
+                createdAt
+                email
+                id
+                last_name
+                name
+                password
+                phone_number
+                roles {
+                  name
+                }
+                updatedAt
+                user_name
+              }
+            }
+          '''),
+          variables: {
+            'input': userInput.toJson(),
+          },
+        ),
+      );
+
+      final userData = result.data?['createUser'];
+
+      if (userData != null) {
+        return UserEntity.fromJson(userData);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

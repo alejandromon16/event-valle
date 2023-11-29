@@ -35,3 +35,28 @@ class AuthInvalidCredentials extends AuthState {
   @override
   List<Object> get props => [];
 }
+
+class AuthRegisterNewUser extends AuthState {
+  @override
+  List<Object> get props => [];
+}
+
+class AuthRegisterUserSuccess extends AuthState {
+  final UserEntity user;
+
+  const AuthRegisterUserSuccess(this.user);
+
+  @override
+  List<Object> get props => [user];
+}
+
+class AuthRegisterUserFailure extends AuthState {
+  final String error;
+
+  const AuthRegisterUserFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+

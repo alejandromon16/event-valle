@@ -9,7 +9,6 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      String image = 'https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,h_1200,q_75,w_1200/v1/clients/irving-redesign/Events_Page_Header_2903ed9c-40c1-4f6c-9a69-70bb8415295b.jpg';
       print(event.principalImage);
        return InkWell(
         onTap: onPressed,

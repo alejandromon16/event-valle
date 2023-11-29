@@ -21,6 +21,39 @@ class LoginInput {
   }
 }
 
+class CreateUserInput {
+  final String email;
+  final String last_name;
+  final String name;
+  final String password;
+  final String? phone_number;
+  final String user_name;
+
+  CreateUserInput({
+    required this.email,
+    required this.last_name,
+    required this.name,
+    required this.password,
+    this.phone_number,
+    required this.user_name,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "email": this.email,
+      "last_name": this.last_name,
+      "name": this.name,
+      "password": this.password,
+      "phone_number": this.phone_number,
+      "user_name": this.user_name,
+    };
+  }
+
+  String toJsonString() {
+    return json.encode(toJson());
+  }
+}
+
 class LogoutEntity {
   final String status;
 
