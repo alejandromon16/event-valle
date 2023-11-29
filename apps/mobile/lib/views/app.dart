@@ -13,14 +13,14 @@ class AppView extends StatefulWidget {
 
 class _AppViewState extends State<AppView> {
 
- int _currentIndex = 0;
- final List<Widget> _screens = [
+int _currentIndex = 0;
+final List<Widget> _screens = [
     HomeView(),
     HomeView(),
     ProfileView(),
   ];
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],

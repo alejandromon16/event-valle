@@ -37,7 +37,7 @@ class AppRouter extends StatelessWidget {
           return SignInView();
         } else if (state is AuthAuthenticated) {
           // You can navigate to the main app screen or other authenticated screens here.
-          return HomeView();
+          return AppView();
         } else {
           return SignInView(); // Or any other initial screen.
         }
