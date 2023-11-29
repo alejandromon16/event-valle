@@ -169,33 +169,6 @@ class _SignInViewState extends State<SignInView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    print("Login with Microsoft");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 24.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    minimumSize: const Size(300, 0),
-                    elevation: 0, // Sin sombra
-                  ),
-                  icon: const FaIcon(FontAwesomeIcons.microsoft),
-                  label: const Text(
-                    '  Login with Microsoft',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 24.0),
               Center(
                 child: GestureDetector(
