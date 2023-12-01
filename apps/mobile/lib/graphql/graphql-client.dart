@@ -16,4 +16,5 @@ class GraphQLClientSingleton {
       link: link,
     );
   }
+  
 }

@@ -38,6 +38,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     });
   }
 
+
   @override
   void dispose() {
     _controller.dispose();
@@ -64,10 +65,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                         bottomPercent: (percent / .3).clamp(0.0, 1.0),
                       );
                     })),
-            SliverToBoxAdapter(
-              child: EventTopInfo(
-                event: widget.event,
-              ),
+            const SliverToBoxAdapter(
+              child: EventTopInfo(),
             ),
             SliverToBoxAdapter(
               child: Container(
@@ -169,17 +168,18 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           color: asistire ? Colors.white : Colors.pink),
                       color: asistire ? Colors.pink : Colors.white,
                     ),
-                    child: InkWell(
-                      onTap: () {
+                    child:
+                    InkWell(
+                      onTap: (){
                         toggle_asistire();
                       },
-                      child: Row(
+                      child:Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
                             icon: Icon(Icons.handshake,
                                 color: asistire ? Colors.white : Colors.pink),
-                            onPressed: () {
+                            onPressed: (){
                               toggle_asistire();
                             },
                           ),
@@ -191,7 +191,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           SizedBox(width: 5)
                         ],
                       ),
-                    )),
+                    )
+                  ),
                 Container(
                     margin: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
@@ -223,8 +224,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
 }
 
 class EventTopInfo extends StatelessWidget {
-  final EventEntity event;
-  const EventTopInfo({Key? key, required this.event});
+  const EventTopInfo({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -247,14 +247,14 @@ class EventTopInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.locationName,
+                    'Hotel Novotel',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 3),
                   Text(
-                    event.locationDetail ?? '',
+                    'Av banzer 8 anillo',
                     style: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
@@ -278,14 +278,14 @@ class EventTopInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    DateTime.parse(event.startDate.toString()).toUtc().toString(),
+                    '14 de Octubre, 2023',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 3),
                   Text(
-                    DateTime.parse(event.endDate.toString()).toUtc().toIso8601String(),
+                    'Martes, 4:00 PM - 10:30 PM',
                     style: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
@@ -295,11 +295,11 @@ class EventTopInfo extends StatelessWidget {
           ),
           SizedBox(height: 30),
           Text(
-            event.subtitle,
+            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
           ),
           SizedBox(height: 10),
           Text(
-            event.description,
+            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
           ),
         ],
       ),

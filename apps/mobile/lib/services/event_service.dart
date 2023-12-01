@@ -10,8 +10,8 @@ class EventService {
       final result = await graphQLClient.query(
         QueryOptions(
           document: gql('''
-            query GetListOfEventsForThisWeek {
-              getListOfEventsForThisWeek {
+            query GetListOfEvents {
+              getListOfEvents {
                 address
                 createdAt
                 description
@@ -35,7 +35,7 @@ class EventService {
         ),
       );
 
-      final eventsData = result.data?['getListOfEventsForThisWeek'];
+      final eventsData = result.data?['getListOfEvents'];
       if (eventsData != null) {
         return List<EventEntity>.from(
           eventsData.map((event) => EventEntity.fromJson(event)),

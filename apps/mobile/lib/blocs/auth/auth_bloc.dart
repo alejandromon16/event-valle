@@ -8,6 +8,7 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService = AuthService();
+  late String _requesterId;
 
   AuthBloc() : super(AuthInitial()) {
     on<AuthCheckRequested>(onAuthCheckRequested);
@@ -32,24 +33,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void onSignInWithEmailPassword(
-      AuthSignInWithEmailPassword event, Emitter<AuthState> emit) async {
-    try {
-      print(event.email);
-      UserEntity? user = await _authService.signInWithEmailPassword(
-          event.email, event.password);
+    AuthSignInWithEmailPassword event, Emitter<AuthState> emit) async {
+  try {
+    print(event.email);
+    UserEntity? user = await _authService.signInWithEmailPassword(
+        event.email, event.password);
 
-      if (user != null) {
-        print('succes login suc ${user.name}');
-        emit(AuthAuthenticated(userId: user.id));
-      } else {
-        print('error');
-        emit(AuthUnauthenticated());
-        emit(AuthInvalidCredentials());
-      }
-    } catch (e) {
-      emit(AuthError(message: e.toString()));
+    if (user != null) {
+      print('succes login suc ${user.name}');
+      _requesterId = user.id;
+      emit(AuthAuthenticated(userId: user.id));
+    } else {
+      print('error');
+      emit(AuthUnauthenticated());
+      emit(AuthInvalidCredentials());
     }
+  } catch (e) {
+    emit(AuthError(message: e.toString()));
   }
+}
+
 
   void onSignOut(AuthSignOut event, Emitter<AuthState> emit) async {
     emit(AuthUnauthenticated());
