@@ -1,7 +1,6 @@
 import 'package:eventvalle/data/models/event.dart';
 import 'package:eventvalle/widgets/AnimatedDetailHeader.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui';
 
 class EventDetailsView extends StatefulWidget {
   final EventEntity event;
@@ -11,13 +10,17 @@ class EventDetailsView extends StatefulWidget {
       {Key? key, required this.event, required this.screenHeight});
 
   @override
-  State<EventDetailsView> createState() => _EventDetailsViewState();
+  State<EventDetailsView> createState() => _EventDetailsViewState(event: event);
 }
 
 class _EventDetailsViewState extends State<EventDetailsView> {
   late ScrollController _controller;
   bool favorite = false;
   bool asistire = false;
+  final EventEntity event;
+
+  _EventDetailsViewState({required this.event});
+
 
   @override
   void initState() {
