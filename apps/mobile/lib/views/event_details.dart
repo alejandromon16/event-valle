@@ -11,13 +11,16 @@ class EventDetailsView extends StatefulWidget {
       {Key? key, required this.event, required this.screenHeight});
 
   @override
-  State<EventDetailsView> createState() => _EventDetailsViewState();
+  State<EventDetailsView> createState() => _EventDetailsViewState(event: event);
 }
 
 class _EventDetailsViewState extends State<EventDetailsView> {
   late ScrollController _controller;
   bool favorite = false;
   bool asistire = false;
+  final EventEntity event;
+
+  _EventDetailsViewState({required this.event});
 
   @override
   void initState() {
@@ -37,7 +40,6 @@ class _EventDetailsViewState extends State<EventDetailsView> {
       asistire = !asistire;
     });
   }
-
 
   @override
   void dispose() {
@@ -65,8 +67,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                         bottomPercent: (percent / .3).clamp(0.0, 1.0),
                       );
                     })),
-            const SliverToBoxAdapter(
-              child: EventTopInfo(),
+            SliverToBoxAdapter(
+              child: EventTopInfo(event: widget.event),
             ),
             SliverToBoxAdapter(
               child: Container(
@@ -168,18 +170,17 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           color: asistire ? Colors.white : Colors.pink),
                       color: asistire ? Colors.pink : Colors.white,
                     ),
-                    child:
-                    InkWell(
-                      onTap: (){
+                    child: InkWell(
+                      onTap: () {
                         toggle_asistire();
                       },
-                      child:Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
                             icon: Icon(Icons.handshake,
                                 color: asistire ? Colors.white : Colors.pink),
-                            onPressed: (){
+                            onPressed: () {
                               toggle_asistire();
                             },
                           ),
@@ -191,8 +192,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           SizedBox(width: 5)
                         ],
                       ),
-                    )
-                  ),
+                    )),
                 Container(
                     margin: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
@@ -224,7 +224,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
 }
 
 class EventTopInfo extends StatelessWidget {
-  const EventTopInfo({Key? key});
+  final EventEntity event;
+  const EventTopInfo({Key? key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -247,14 +248,14 @@ class EventTopInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hotel Novotel',
+                    event.locationName,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 3),
                   Text(
-                    'Av banzer 8 anillo',
+                    event.address,
                     style: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
@@ -278,14 +279,14 @@ class EventTopInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '14 de Octubre, 2023',
+                    event.startDate.toIso8601String(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 3),
                   Text(
-                    'Martes, 4:00 PM - 10:30 PM',
+                    event.endDate.toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
@@ -295,11 +296,11 @@ class EventTopInfo extends StatelessWidget {
           ),
           SizedBox(height: 30),
           Text(
-            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            event.subtitle,
           ),
           SizedBox(height: 10),
           Text(
-            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            event.description,
           ),
         ],
       ),
