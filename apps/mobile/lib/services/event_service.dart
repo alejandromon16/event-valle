@@ -47,4 +47,48 @@ class EventService {
       throw Exception(e.toString());
     }
   }
+  Future<List<EventEntity>> getListOfEvents() async {
+    try {
+      final graphQLClient = GraphQLClientSingleton.getClient();
+
+      final result = await graphQLClient.query(
+        QueryOptions(
+          document: gql('''
+            query GetListOfEvents {
+              getListOfEvents {
+                address
+                createdAt
+                description
+                endDate
+                id
+                images
+                latitud
+                locationDetail
+                locationName
+                longitud
+                principalImage
+                startDate
+                status
+                subtitle
+                tags
+                title
+                updatedAt
+              }
+            }
+          '''),
+        ),
+      );
+
+      final eventsData = result.data?['getListOfEvents'];
+      if (eventsData != null) {
+        return List<EventEntity>.from(
+          eventsData.map((event) => EventEntity.fromJson(event)),
+        );
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

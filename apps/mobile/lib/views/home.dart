@@ -109,8 +109,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       ),
       body: FutureBuilder<List<EventEntity>>(
         future: !_isSearching
-        ? Future.delayed(Duration(seconds: 1), () => _eventService.getListOfEventsForThisWeek())
-        : Future.delayed(Duration(milliseconds: 200), () => _eventService.getListOfEventsForThisWeek()),
+        ? Future.delayed(Duration(seconds: 1), () => _eventService.getListOfEvents())
+        : Future.delayed(Duration(milliseconds: 200), () => _eventService.getListOfEvents()),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             //skeleton aqui
