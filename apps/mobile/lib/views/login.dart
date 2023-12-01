@@ -1,7 +1,6 @@
 import 'package:eventvalle/blocs/auth/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -153,18 +152,6 @@ class _SignInViewState extends State<SignInView> {
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24.0),
-              Center(
-                child: GestureDetector(
-                  child: const Text(
-                    'OR',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20.0,
                     ),
                   ),
                 ),

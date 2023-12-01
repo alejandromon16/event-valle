@@ -95,7 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
                   width: 230,
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               const Text(
                 'Registrarse',
                 style: TextStyle(
@@ -103,7 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -129,7 +129,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -155,7 +155,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -181,7 +181,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -207,7 +207,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -234,7 +234,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -261,7 +261,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
@@ -290,7 +290,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 8.0),
               Text(
                 error,
                 style: TextStyle(color: Colors.red),
@@ -300,18 +300,23 @@ class _RegisterViewState extends State<RegisterView> {
                 child: ElevatedButton(
                   onPressed: () {
                     String email = emailController.text;
-                    if (email.isNotEmpty && email.endsWith("univalle.edu")) {
-                      if (passwordController.text ==
-                          passwordRepeatController.text) {
-                        context
-                            .read<AuthBloc>()
-                            .add(AuthRegisterUser(
-                              email: emailController.text,
-                              userName: usernameController.text,
+                    String username = usernameController.text;
+                    String password = passwordController.text;
+                    String passwordRepeat = passwordRepeatController.text;
+
+                    if (email.isNotEmpty &&
+                        email.endsWith("univalle.edu") &&
+                        username.isNotEmpty &&
+                        password.isNotEmpty &&
+                        passwordRepeat.isNotEmpty) {
+                      if (password == passwordRepeat) {
+                        context.read<AuthBloc>().add(AuthRegisterUser(
+                              email: email,
+                              userName: username,
                               name: nameController.text,
                               lastName: lastnameController.text,
                               phoneNumber: phoneNumberController.text,
-                              password: passwordController.text,
+                              password: password,
                             ));
                       } else {
                         setState(() {
@@ -320,7 +325,8 @@ class _RegisterViewState extends State<RegisterView> {
                       }
                     } else {
                       setState(() {
-                        error = "El correo debe ser del dominio univalle.edu";
+                        error =
+                            "Por favor, completa todos los campos y asegúrate de que el correo sea del dominio univalle.edu";
                       });
                     }
                   },
@@ -339,6 +345,23 @@ class _RegisterViewState extends State<RegisterView> {
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24.0),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    context
+                        .read<AuthBloc>()
+                        .add(ChangeAuthState(AuthUnauthenticated()));
+                  },
+                  child: const Text(
+                    'Tienes una cuenta? Inicia sesion',
+                    style: TextStyle(
+                      color: Colors.brown,
+                      fontSize: 16.0,
                     ),
                   ),
                 ),
