@@ -18,7 +18,7 @@ class AnimatedDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> images = ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlZXOmMZqdtw1tr7bxrZPvUqeDj-DKNgKJSQ&usqp=CAU", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5Dy-c4bv-mYJ9Uh9Gw3SLd1ZlTmjQcJBbcQ&usqp=CAU"];
+    final List<String> images = [event.principalImage];
     final topPadding = MediaQuery.of(context).padding.top;
 
     return Stack(
