@@ -76,7 +76,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     })
                 : Container(
                     child: const Text(
-                      'Eventos',
+                      'Esta semana',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -150,7 +150,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   ),
                   SizedBox(height: 10),
                   Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 15, right: 15),
                       child: Text(
                         'No hay eventos disponibles para esta semana.',
                         style: TextStyle(

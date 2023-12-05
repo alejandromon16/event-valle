@@ -213,6 +213,9 @@ class EventService {
           tags
           title
           updatedAt
+          isLiked
+          isSaved
+          amountOfLikes
           requestEvent {
             requestedBy {
               name

@@ -79,7 +79,7 @@ class _SavedEventsViewState extends State<SavedEventsView>
                     })
                 : Container(
                     child: const Text(
-                      'Eventos',
+                      'Favoritos',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -153,7 +153,7 @@ class _SavedEventsViewState extends State<SavedEventsView>
                   ),
                   SizedBox(height: 10), // Espacio entre la imagen y el texto
                   Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 15, right: 15),
                       child: Text(
                         'Actualmente, no tienes ningún evento marcado como favorito.',
                         style: TextStyle(
