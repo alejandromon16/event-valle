@@ -16,6 +16,8 @@ import { useAuthStore } from '../stores/authStore';
 import axios from 'axios';
 import { User } from '@prisma/client';
 import ViewUserModal from './modals/user/profile';
+import { useLogoutMutation, useLogoutQuery } from '@/types';
+import graphqlRequestClient from '../providers/graphql';
 
 interface HeaderProps {
   onLogout: () => void;
@@ -28,13 +30,17 @@ const Header: React.FC<HeaderProps> = ({ onLogout, router }) => {
   const [viewProfileModalOpen, setViewProfileModalOpen] = React.useState(false);
   const [currentUserData, setCurrentUserData ] = React.useState<Partial<User>>(authState.user)
   const logout = useAuthStore((state) => state.logout);
-
+  const { mutate: logoutUser } = useLogoutMutation(
+    graphqlRequestClient,
+    {}
+  )
   const handleProfileClick = () => {
       setViewProfileModalOpen(true);
   };
 
   const handleLogout = async () => {
     logout();
+    logoutUser({});
     await axios.delete('/api/auth');
     router.replace('/');
   }

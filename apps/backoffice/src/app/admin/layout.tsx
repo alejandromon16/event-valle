@@ -1,6 +1,7 @@
 'use client'
 import Header from '@/src/components/Header';
 import Sidebar from '@/src/components/Sidebar';
+import { EdgeStoreProvider } from '@/src/lib/edgestore';
 import { useAuthStore } from '@/src/stores/authStore';
 import { Box, Flex } from '@chakra-ui/react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -16,10 +17,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const path = usePathname();
   const activeNavItem = path.split('/')[2];
 
-  if(!authStore.isAuthenticated){
-    router.push('/')
-  }else{
-    return (
+  return (
+    <EdgeStoreProvider>
       <Box display="flex" minHeight="100vh">
         {/* Sidebar Component */}
         <Sidebar isOpen={true} onClose={() => {}} router={router} activeNavItem={activeNavItem} />
@@ -34,6 +33,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Box>
         </Flex>
       </Box>
-    )
-  }
+    </EdgeStoreProvider>
+  );
 };

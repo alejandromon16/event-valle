@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, router, activeNavIte
           </Button>
         ) : null}
 
-        {userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.RequestApprover) || userRoles.includes(RoleType.Admin) ? (
+        {userRoles.includes(RoleType.SuperAdmin) || userRoles.includes(RoleType.Marketing) || userRoles.includes(RoleType.RequestApprover) || userRoles.includes(RoleType.Admin) ? (
           <Button
             width="full"
             justifyContent="left"

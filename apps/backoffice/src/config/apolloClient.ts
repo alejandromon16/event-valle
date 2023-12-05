@@ -11,7 +11,7 @@ import {
 
 const makeClient = () => {
   const httpLink = new HttpLink({
-      uri: process.env.APOLLO_URI,
+      uri: 'http://localhost:8000/graphql',
       credentials: 'include'
   });
 

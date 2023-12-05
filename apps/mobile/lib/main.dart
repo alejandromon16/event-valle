@@ -39,7 +39,7 @@ class AppRouter extends StatelessWidget {
       } else if (state is AuthRegisterNewUser) {
         return RegisterView();
       } else {
-        return SignInView(); 
+        return SignInView();
       }
     });
 

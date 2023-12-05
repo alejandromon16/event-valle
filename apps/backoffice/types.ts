@@ -26,6 +26,11 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type ApproveRequestEventInput = {
+  approverId: Scalars['String']['input'];
+  requestEventId: Scalars['String']['input'];
+};
+
 export type AssignRolesToUserInput = {
   roles: Array<RoleType>;
   userId: Scalars['String']['input'];
@@ -94,6 +99,31 @@ export type EventEntity = {
   updatedAt: Scalars['String']['output'];
 };
 
+export type EventEntityWithInfoOfUser = {
+  __typename?: 'EventEntityWithInfoOfUser';
+  address: Scalars['String']['output'];
+  amountOfLikes: Scalars['Int']['output'];
+  createdAt: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  images: Array<Scalars['String']['output']>;
+  isLiked: Scalars['Boolean']['output'];
+  isSaved: Scalars['Boolean']['output'];
+  latitud?: Maybe<Scalars['Float']['output']>;
+  locationDetail?: Maybe<Scalars['String']['output']>;
+  locationName: Scalars['String']['output'];
+  longitud?: Maybe<Scalars['Float']['output']>;
+  principalImage: Scalars['String']['output'];
+  requestEvent?: Maybe<RequestEventEntity>;
+  startDate: Scalars['DateTime']['output'];
+  status: EventStatus;
+  subtitle: Scalars['String']['output'];
+  tags: Array<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
 /** Possible status for events */
 export enum EventStatus {
   Draft = 'DRAFT',
@@ -104,8 +134,20 @@ export type FindRoleByNameInput = {
   name: RoleType;
 };
 
+export type GetEventByIdInput = {
+  eventId: Scalars['String']['input'];
+};
+
 export type GetListByRequesterIdInput = {
   requesterId: Scalars['String']['input'];
+};
+
+export type GetListOfEventsInput = {
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GetListOfEventsSavedByUserIdInput = {
+  userId: Scalars['String']['input'];
 };
 
 export type GetRequestEventByIdInput = {
@@ -143,18 +185,24 @@ export type MeEntity = {
 export type Mutation = {
   __typename?: 'Mutation';
   addLike: EventEntity;
+  approveRequestEvent: RequestEventEntity;
   assignRolesToUser: UserEntity;
   createEvent: EventEntity;
   createRequestEvent: RequestEventEntity;
   createRole: RoleEntity;
   createUser: UserEntity;
   login: UserEntity;
+  logout: LogoutEntity;
+  publishEvent: EventEntity;
+  rejectRequestEvent: RequestEventEntity;
   removeLike: EventEntity;
   removeUser: UserEntity;
   requestPasswordReset: UserEntity;
   resetPassword: UserEntity;
   saveEventByUser: EventEntity;
+  unPublishEvent: EventEntity;
   unSaveEventByUser: EventEntity;
+  updateEvent: EventEntity;
   updateUser: UserEntity;
   validatePasswordResetToken: ValidatePasswordResetTokenEntity;
 };
@@ -162,6 +210,11 @@ export type Mutation = {
 
 export type MutationAddLikeArgs = {
   likedEventInput: LikedEventInput;
+};
+
+
+export type MutationApproveRequestEventArgs = {
+  approveRequestEventInput: ApproveRequestEventInput;
 };
 
 
@@ -195,6 +248,16 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationPublishEventArgs = {
+  publishEventInput: PublishEventInput;
+};
+
+
+export type MutationRejectRequestEventArgs = {
+  approveRequestEventInput: ApproveRequestEventInput;
+};
+
+
 export type MutationRemoveLikeArgs = {
   likedEventInput: LikedEventInput;
 };
@@ -220,8 +283,18 @@ export type MutationSaveEventByUserArgs = {
 };
 
 
+export type MutationUnPublishEventArgs = {
+  unPublishEventInput: UnPublishEventInput;
+};
+
+
 export type MutationUnSaveEventByUserArgs = {
   saveEventInput: SaveEventInput;
+};
+
+
+export type MutationUpdateEventArgs = {
+  updateEventInput: UpdateEventInput;
 };
 
 
@@ -234,18 +307,26 @@ export type MutationValidatePasswordResetTokenArgs = {
   validatePasswordResetTokenInput: ValidatePasswordResetTokenInput;
 };
 
+export type PublishEventInput = {
+  eventId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   findRoleByName: RoleEntity;
+  getAmountOfDraftEvents: Scalars['Int']['output'];
+  getAmountOfPublishEvents: Scalars['Int']['output'];
+  getEventById: EventEntity;
   getListOfEvents: Array<EventEntity>;
   getListOfEventsByRequesterId: Array<EventEntity>;
   getListOfEventsForThisMonth: Array<EventEntity>;
-  getListOfEventsForThisWeek: Array<EventEntity>;
+  getListOfEventsForThisWeek: Array<EventEntityWithInfoOfUser>;
+  getListOfEventsSavedByUserId: Array<EventEntity>;
   getListOfRequestsEvents: Array<RequestEventEntity>;
   getListOfRequestsEventsByUserId: Array<RequestEventEntity>;
   getRequestEventById: RequestEventEntity;
   listUsers: Array<UserEntity>;
-  logout: LogoutEntity;
   me: MeEntity;
   retrieveUser: UserEntity;
   rolesList: Array<RoleEntity>;
@@ -257,8 +338,23 @@ export type QueryFindRoleByNameArgs = {
 };
 
 
+export type QueryGetEventByIdArgs = {
+  getEventByIdInput: GetEventByIdInput;
+};
+
+
 export type QueryGetListOfEventsByRequesterIdArgs = {
   getListOfEventsByRequesterIdInput: GetListByRequesterIdInput;
+};
+
+
+export type QueryGetListOfEventsForThisWeekArgs = {
+  getListOfEventsInput: GetListOfEventsInput;
+};
+
+
+export type QueryGetListOfEventsSavedByUserIdArgs = {
+  getListOfEventsSavedByUserIdInput: GetListOfEventsSavedByUserIdInput;
 };
 
 
@@ -341,6 +437,27 @@ export type SaveEventInput = {
   userId: Scalars['String']['input'];
 };
 
+export type UnPublishEventInput = {
+  eventId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+export type UpdateEventInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  eventId: Scalars['String']['input'];
+  images?: InputMaybe<Array<Scalars['String']['input']>>;
+  locationName?: InputMaybe<Scalars['String']['input']>;
+  principalImage?: InputMaybe<Scalars['String']['input']>;
+  requestEventId?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateUserInput = {
   email?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
@@ -388,10 +505,10 @@ export type GetListOfRequestsEventsQueryVariables = Exact<{ [key: string]: never
 
 export type GetListOfRequestsEventsQuery = { __typename?: 'Query', getListOfRequestsEvents: Array<{ __typename?: 'RequestEventEntity', id: string, status: RequestEventStatus, title: string, createdAt?: string | null, requestedBy?: { __typename?: 'UserEntity', id: string, name: string, user_name: string } | null }> };
 
-export type LogoutQueryVariables = Exact<{ [key: string]: never; }>;
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutQuery = { __typename?: 'Query', logout: { __typename?: 'LogoutEntity', status: string } };
+export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutEntity', status: string } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -449,6 +566,58 @@ export type GetListOfEventByRequesterIdQueryVariables = Exact<{
 
 
 export type GetListOfEventByRequesterIdQuery = { __typename?: 'Query', getListOfEventsByRequesterId: Array<{ __typename?: 'EventEntity', address: string, createdAt: string, description: string, endDate?: any | null, id: string, images: Array<string>, latitud?: number | null, locationDetail?: string | null, locationName: string, longitud?: number | null, principalImage: string, startDate: any, status: EventStatus, subtitle: string, tags: Array<string>, title: string, updatedAt: string, requestEvent?: { __typename?: 'RequestEventEntity', id: string, approvedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null, requestedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null } | null }> };
+
+export type GetEventByIdQueryVariables = Exact<{
+  input: GetEventByIdInput;
+}>;
+
+
+export type GetEventByIdQuery = { __typename?: 'Query', getEventById: { __typename?: 'EventEntity', address: string, createdAt: string, description: string, endDate?: any | null, id: string, images: Array<string>, latitud?: number | null, locationDetail?: string | null, locationName: string, longitud?: number | null, principalImage: string, startDate: any, status: EventStatus, subtitle: string, tags: Array<string>, title: string, updatedAt: string, requestEvent?: { __typename?: 'RequestEventEntity', id: string, approvedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null, requestedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null } | null } };
+
+export type PublishEventMutationVariables = Exact<{
+  input: PublishEventInput;
+}>;
+
+
+export type PublishEventMutation = { __typename?: 'Mutation', publishEvent: { __typename?: 'EventEntity', id: string } };
+
+export type UnPublishEventMutationVariables = Exact<{
+  input: UnPublishEventInput;
+}>;
+
+
+export type UnPublishEventMutation = { __typename?: 'Mutation', unPublishEvent: { __typename?: 'EventEntity', status: EventStatus, id: string, title: string } };
+
+export type RejectRequestEventMutationVariables = Exact<{
+  input: ApproveRequestEventInput;
+}>;
+
+
+export type RejectRequestEventMutation = { __typename?: 'Mutation', rejectRequestEvent: { __typename?: 'RequestEventEntity', id: string } };
+
+export type ApproveRequestEventMutationVariables = Exact<{
+  input: ApproveRequestEventInput;
+}>;
+
+
+export type ApproveRequestEventMutation = { __typename?: 'Mutation', approveRequestEvent: { __typename?: 'RequestEventEntity', id: string } };
+
+export type UpdateEventMutationVariables = Exact<{
+  input: UpdateEventInput;
+}>;
+
+
+export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent: { __typename?: 'EventEntity', address: string, createdAt: string, description: string, endDate?: any | null, id: string, images: Array<string>, latitud?: number | null, locationDetail?: string | null, locationName: string, longitud?: number | null, principalImage: string, startDate: any, status: EventStatus, subtitle: string, tags: Array<string>, title: string, updatedAt: string, requestEvent?: { __typename?: 'RequestEventEntity', id: string, approvedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null, requestedBy?: { __typename?: 'UserEntity', id: string, user_name: string, name: string, last_name: string } | null } | null } };
+
+export type GetAmountOfDraftEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAmountOfDraftEventsQuery = { __typename?: 'Query', getAmountOfDraftEvents: number };
+
+export type GetAmountOfPublishEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAmountOfPublishEventsQuery = { __typename?: 'Query', getAmountOfPublishEvents: number };
 
 
 
@@ -520,26 +689,25 @@ export const useGetListOfRequestsEventsQuery = <
     )};
 
 export const LogoutDocument = `
-    query Logout {
+    mutation Logout {
   logout {
     status
   }
 }
     `;
 
-export const useLogoutQuery = <
-      TData = LogoutQuery,
-      TError = unknown
+export const useLogoutMutation = <
+      TError = unknown,
+      TContext = unknown
     >(
       client: GraphQLClient,
-      variables?: LogoutQueryVariables,
-      options?: UseQueryOptions<LogoutQuery, TError, TData>,
+      options?: UseMutationOptions<LogoutMutation, TError, LogoutMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) => {
     
-    return useQuery<LogoutQuery, TError, TData>(
-      variables === undefined ? ['Logout'] : ['Logout', variables],
-      fetcher<LogoutQuery, LogoutQueryVariables>(client, LogoutDocument, variables, headers),
+    return useMutation<LogoutMutation, TError, LogoutMutationVariables, TContext>(
+      ['Logout'],
+      (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(client, LogoutDocument, variables, headers)(),
       options
     )};
 
@@ -864,5 +1032,252 @@ export const useGetListOfEventByRequesterIdQuery = <
     return useQuery<GetListOfEventByRequesterIdQuery, TError, TData>(
       ['GetListOfEventByRequesterId', variables],
       fetcher<GetListOfEventByRequesterIdQuery, GetListOfEventByRequesterIdQueryVariables>(client, GetListOfEventByRequesterIdDocument, variables, headers),
+      options
+    )};
+
+export const GetEventByIdDocument = `
+    query GetEventById($input: GetEventByIdInput!) {
+  getEventById(getEventByIdInput: $input) {
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent {
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+export const useGetEventByIdQuery = <
+      TData = GetEventByIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetEventByIdQueryVariables,
+      options?: UseQueryOptions<GetEventByIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetEventByIdQuery, TError, TData>(
+      ['GetEventById', variables],
+      fetcher<GetEventByIdQuery, GetEventByIdQueryVariables>(client, GetEventByIdDocument, variables, headers),
+      options
+    )};
+
+export const PublishEventDocument = `
+    mutation publishEvent($input: PublishEventInput!) {
+  publishEvent(publishEventInput: $input) {
+    id
+  }
+}
+    `;
+
+export const usePublishEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<PublishEventMutation, TError, PublishEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<PublishEventMutation, TError, PublishEventMutationVariables, TContext>(
+      ['publishEvent'],
+      (variables?: PublishEventMutationVariables) => fetcher<PublishEventMutation, PublishEventMutationVariables>(client, PublishEventDocument, variables, headers)(),
+      options
+    )};
+
+export const UnPublishEventDocument = `
+    mutation UnPublishEvent($input: UnPublishEventInput!) {
+  unPublishEvent(unPublishEventInput: $input) {
+    status
+    id
+    title
+  }
+}
+    `;
+
+export const useUnPublishEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UnPublishEventMutation, TError, UnPublishEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<UnPublishEventMutation, TError, UnPublishEventMutationVariables, TContext>(
+      ['UnPublishEvent'],
+      (variables?: UnPublishEventMutationVariables) => fetcher<UnPublishEventMutation, UnPublishEventMutationVariables>(client, UnPublishEventDocument, variables, headers)(),
+      options
+    )};
+
+export const RejectRequestEventDocument = `
+    mutation rejectRequestEvent($input: ApproveRequestEventInput!) {
+  rejectRequestEvent(approveRequestEventInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useRejectRequestEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<RejectRequestEventMutation, TError, RejectRequestEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<RejectRequestEventMutation, TError, RejectRequestEventMutationVariables, TContext>(
+      ['rejectRequestEvent'],
+      (variables?: RejectRequestEventMutationVariables) => fetcher<RejectRequestEventMutation, RejectRequestEventMutationVariables>(client, RejectRequestEventDocument, variables, headers)(),
+      options
+    )};
+
+export const ApproveRequestEventDocument = `
+    mutation approveRequestEvent($input: ApproveRequestEventInput!) {
+  approveRequestEvent(approveRequestEventInput: $input) {
+    id
+  }
+}
+    `;
+
+export const useApproveRequestEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ApproveRequestEventMutation, TError, ApproveRequestEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<ApproveRequestEventMutation, TError, ApproveRequestEventMutationVariables, TContext>(
+      ['approveRequestEvent'],
+      (variables?: ApproveRequestEventMutationVariables) => fetcher<ApproveRequestEventMutation, ApproveRequestEventMutationVariables>(client, ApproveRequestEventDocument, variables, headers)(),
+      options
+    )};
+
+export const UpdateEventDocument = `
+    mutation UpdateEvent($input: UpdateEventInput!) {
+  updateEvent(updateEventInput: $input) {
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent {
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+export const useUpdateEventMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateEventMutation, TError, UpdateEventMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<UpdateEventMutation, TError, UpdateEventMutationVariables, TContext>(
+      ['UpdateEvent'],
+      (variables?: UpdateEventMutationVariables) => fetcher<UpdateEventMutation, UpdateEventMutationVariables>(client, UpdateEventDocument, variables, headers)(),
+      options
+    )};
+
+export const GetAmountOfDraftEventsDocument = `
+    query GetAmountOfDraftEvents {
+  getAmountOfDraftEvents
+}
+    `;
+
+export const useGetAmountOfDraftEventsQuery = <
+      TData = GetAmountOfDraftEventsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetAmountOfDraftEventsQueryVariables,
+      options?: UseQueryOptions<GetAmountOfDraftEventsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetAmountOfDraftEventsQuery, TError, TData>(
+      variables === undefined ? ['GetAmountOfDraftEvents'] : ['GetAmountOfDraftEvents', variables],
+      fetcher<GetAmountOfDraftEventsQuery, GetAmountOfDraftEventsQueryVariables>(client, GetAmountOfDraftEventsDocument, variables, headers),
+      options
+    )};
+
+export const GetAmountOfPublishEventsDocument = `
+    query GetAmountOfPublishEvents {
+  getAmountOfPublishEvents
+}
+    `;
+
+export const useGetAmountOfPublishEventsQuery = <
+      TData = GetAmountOfPublishEventsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetAmountOfPublishEventsQueryVariables,
+      options?: UseQueryOptions<GetAmountOfPublishEventsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetAmountOfPublishEventsQuery, TError, TData>(
+      variables === undefined ? ['GetAmountOfPublishEvents'] : ['GetAmountOfPublishEvents', variables],
+      fetcher<GetAmountOfPublishEventsQuery, GetAmountOfPublishEventsQueryVariables>(client, GetAmountOfPublishEventsDocument, variables, headers),
       options
     )};

@@ -7,7 +7,7 @@ import ReactQueryProviders from '../providers/query.provider';
 import { useAuthStore } from '../stores/authStore';
 import "@uploadthing/react/styles.css";
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const firaSans = Fira_Sans({
    weight: ['100','200','300','400','500','600','700','800','900'],

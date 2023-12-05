@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { QueryClient } from 'react-query';
 
-const GRAPHQL_ENDPOINT = 'http://localhost:3000/graphql'
+const GRAPHQL_ENDPOINT = 'http://localhost:8000/graphql'
 
 const graphqlRequestClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
   credentials: 'include',

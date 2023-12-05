@@ -21,6 +21,8 @@ function index() {
       }
     })
 
+  console.log(data);
+
   const mappedData = React.useMemo(() => {
     if (!data) return [];
 
@@ -115,7 +117,7 @@ function index() {
   ];
 
   const menuItemsMarketingTeam: MenuItem[] = [
-    ...generateMenuItems((data) => handleEditClick(data), [
+    ...generateMenuItems((data) => handlePreviewClick(data), [
       {
         label: 'Edit',
         onClick: (data) => handleEditClick(data),
@@ -124,14 +126,14 @@ function index() {
   ];
 
   const menuItemsRequester: MenuItem[] = [
-    ...generateMenuItems((data) => handleDetailsClick(data)),
+    ...generateMenuItems((data) => handlePreviewClick(data)),
   ];
 
   const getMenuItems = () => {
     switch (true) {
       case authStore.roles.some(role => role === 'REQUEST_APPROVER' || role === 'SUPER_ADMIN'):
         return menuItemsApprover;
-      case authStore.roles.some(role => role === 'ADMIN'):
+      case authStore.roles.some(role => role === 'MARKETING'):
         return menuItemsMarketingTeam;
       default:
         return menuItemsRequester;

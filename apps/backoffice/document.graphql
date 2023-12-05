@@ -29,7 +29,7 @@ query GetListOfRequestsEvents{
   }
 }
 
-query Logout {
+mutation Logout {
   logout{
     status
   }
@@ -199,4 +199,122 @@ query GetListOfEventByRequesterId($input:GetListByRequesterIdInput!){
       }
     }
   }
+}
+
+
+query GetEventById($input:GetEventByIdInput!){
+  getEventById(getEventByIdInput:$input){
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent{
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy{
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+
+
+mutation publishEvent($input:PublishEventInput!){
+  publishEvent(publishEventInput:$input){
+    id
+  }
+}
+
+mutation UnPublishEvent($input:UnPublishEventInput!){
+  unPublishEvent(unPublishEventInput:$input){
+    status
+    id
+    title
+  }
+}
+
+mutation rejectRequestEvent($input:ApproveRequestEventInput!){
+  rejectRequestEvent(approveRequestEventInput:$input){
+    id
+  }
+}
+
+mutation approveRequestEvent($input:ApproveRequestEventInput!){
+  approveRequestEvent(approveRequestEventInput:$input){
+    id
+  }
+}
+
+mutation UpdateEvent($input:UpdateEventInput!){
+  updateEvent(updateEventInput:$input){
+    address
+    createdAt
+    description
+    endDate
+    id
+    images
+    latitud
+    locationDetail
+    locationName
+    longitud
+    principalImage
+    startDate
+    status
+    subtitle
+    tags
+    title
+    updatedAt
+    requestEvent{
+      id
+      approvedBy {
+        id
+        user_name
+        name
+        last_name
+      }
+      requestedBy{
+        id
+        user_name
+        name
+        last_name
+      }
+    }
+  }
+}
+
+query GetAmountOfDraftEvents{
+  getAmountOfDraftEvents
+}
+
+query GetAmountOfPublishEvents{
+  getAmountOfPublishEvents
+}
+
+query GetAmountOfDraftEvents{
+  getAmountOfDraftEvents
+}
+
+query GetAmountOfPublishEvents{
+  getAmountOfPublishEvents
 }

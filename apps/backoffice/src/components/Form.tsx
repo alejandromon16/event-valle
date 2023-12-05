@@ -19,6 +19,8 @@ import {
 import { date, string, z, ZodError } from 'zod';
 import { DatePicker, Space } from 'antd';
 import DateTimePicker from './DateTimePicker';
+import SingleImageDropzoneUsage from './SingleImageDropzoneUsage';
+import MultiFileDropzoneUsage from './MultiImageDropzoneUsage';
 
 
 const { RangePicker } = DatePicker;
@@ -30,11 +32,14 @@ export enum InputFieldType {
   Phone = 'phone',
   Date = 'date',
   TextArea= 'textarea',
+  Image = 'image',
+  MultiImage = 'multiimages',
 }
 
 interface InputFieldConfig {
   type: InputFieldType;
   options?: string[];
+  editable?: boolean;
 }
 
 interface FormProps<T extends z.ZodObject<any, any, any>> {
@@ -86,7 +91,12 @@ const Form = <T extends z.ZodObject<any, any, any>>({
     }));
   }
 
-
+  const handleImageChange = (imageUrl:string, name:string) => {
+    setFormState((prevData) => ({
+      ...prevData,
+      [name]: imageUrl,
+    }));
+  }
 
 
   const clearErrors = () => setErrors({});
@@ -132,10 +142,46 @@ const Form = <T extends z.ZodObject<any, any, any>>({
         return renderSelectField(label, key, config?.options || []);
       case InputFieldType.MultiSelect:
         return renderMultiSelectField(label, key, config?.options || []);
+      case InputFieldType.Image:
+        return renderImageField(label, key);
+        case InputFieldType.MultiImage:
+          return renderMultiImageField(label, key);
       default:
-        return null; // Unknown field type, you can handle this case as needed
+        return null;
     }
   };
+
+  const renderMultiImageField = (label: string, key:string) => {
+    return (
+      <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>
+          {label}
+        </FormLabel>
+        <MultiFileDropzoneUsage
+          name={key}
+          value={formState[key]}
+          onChange={() => {}}
+        />
+        <Text color="red.500">{errors[key]}</Text>
+      </FormControl>
+    )
+  }
+
+  const renderImageField = (label: string, key:string) => {
+    return (
+      <FormControl mt={4} isInvalid={!!errors[key]} key={key}>
+        <FormLabel fontWeight="medium" textTransform={'capitalize'}>
+          {label}
+        </FormLabel>
+        <SingleImageDropzoneUsage
+          name={key}
+          value={formState[key]}
+          onChange={handleImageChange}
+        />
+        <Text color="red.500">{errors[key]}</Text>
+      </FormControl>
+    )
+  }
 
   const renderDateField = (label: string, key: string) => {
     return (
@@ -261,10 +307,10 @@ const Form = <T extends z.ZodObject<any, any, any>>({
           </SimpleGrid>
         </Box>
         <Flex justifyContent="flex-end" marginTop="4">
-          <Button variant="ghost" onClick={onCancel} marginRight="2">
+          <Button variant="outline" onClick={onCancel} marginRight="2">
             Cancel
           </Button>
-          <Button colorScheme="pink" onClick={handleSubmit}>
+          <Button colorScheme="pink" variant="solid" onClick={handleSubmit}>
             {submitButtonText}
           </Button>
         </Flex>
