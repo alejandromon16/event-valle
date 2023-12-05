@@ -76,7 +76,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     })
                 : Container(
                     child: const Text(
-                      'Eventos',
+                      'Esta semana',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -109,30 +109,60 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       ),
       body: FutureBuilder<List<EventEntity>>(
         future: !_isSearching
-            ? Future.delayed(Duration(seconds: 1),
-                () => _eventService.getListOfEventsForThisWeek(singleton.userId.toString()))
-            : Future.delayed(Duration(milliseconds: 200),
-                () => _eventService.getListOfEventsForThisWeek(singleton.userId.toString())),
+            ? Future.delayed(
+                Duration(seconds: 1),
+                () => _eventService
+                    .getListOfEventsForThisWeek(singleton.userId.toString()))
+            : Future.delayed(
+                Duration(milliseconds: 200),
+                () => _eventService
+                    .getListOfEventsForThisWeek(singleton.userId.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             //skeleton aqui
-            return Column(
-              children: [
-                SizedBox(
-                  height: 300,
-                  child: EventCardSkeleton(),
-                ),
-                SizedBox(height: 16),
-                SizedBox(
-                  height: 300,
-                  child: EventCardSkeleton(),
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: EventCardSkeleton(),
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    height: 300,
+                    child: EventCardSkeleton(),
+                  ),
+                ],
+              ),
             );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No events available for this week.');
+            return Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://static.vecteezy.com/system/resources/previews/012/181/008/original/document-data-file-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-etc-vector.jpg',
+                    width: 300,
+                    height: 300,
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                      padding: EdgeInsets.only(left: 15, right: 15),
+                      child: Text(
+                        'No hay eventos disponibles para esta semana.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
+                ],
+              ),
+            );
           } else {
             // Update the _events variable
             _events = snapshot.data!;

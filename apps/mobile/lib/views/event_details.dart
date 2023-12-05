@@ -25,6 +25,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
   final EventEntity event;
   final EventService _eventService = EventService();
   final Singleton singleton = Singleton();
+  final List<String> tags = ['Tecnologia', 'Empresarial', 'Salud', 'Gastronomia', 'Urbanismo'];
+
 
   _EventDetailsViewState({required this.event});
 
@@ -101,7 +103,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       spacing: 10,
                       runSpacing: 10,
                       children: List.generate(
-                        event.tags.length,
+                        tags.length,
                         (index) => Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
@@ -109,7 +111,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                             color: Colors.black12,
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          child: Text(event.tags[index]),
+                          child: Text(tags[index]),
                         ),
                       ),
                     )
@@ -142,20 +144,20 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(50)),
                       border: Border.all(
-                          color: favorite ? Colors.white : Colors.pink),
-                      color: favorite ? Colors.pink : Colors.white,
+                          color: favorite ? Colors.white : Color(0xFF993366)),
+                      color: favorite ? Color(0xFF993366) : Colors.white,
                     ),
                     child: IconButton(
                       onPressed: () {
                         toggle_favorite();
                       },
                       style: TextButton.styleFrom(
-                        primary: Colors.pink,
+                        primary: Color(0xFF993366),
                         shape: const StadiumBorder(),
                       ),
                       icon: Icon(
                         favorite ? Icons.favorite : Icons.favorite_border,
-                        color: favorite ? Colors.white : Colors.pink,
+                        color: favorite ? Colors.white : Color(0xFF993366),
                       ),
                     )),
               ],
@@ -174,7 +176,7 @@ class EventTopInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime fecha = DateTime.parse(event.startDate.toString());
-    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
+    String fechaFormateada = DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -187,7 +189,7 @@ class EventTopInfo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.pink.shade50,
                 ),
-                child: const Icon(Icons.location_on, color: Colors.pink),
+                child: const Icon(Icons.location_on, color: Color(0xFF993366)),
               ),
               SizedBox(width: 20),
               Column(
@@ -218,13 +220,13 @@ class EventTopInfo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.pink.shade50,
                 ),
-                child: const Icon(Icons.calendar_month, color: Colors.pink),
+                child: const Icon(Icons.calendar_month, color: Color(0xFF993366)),
               ),
               SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 6),
+                  SizedBox(height: 4),
                   Text(
                     fechaFormateada,
                     style: TextStyle(

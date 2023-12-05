@@ -74,7 +74,7 @@ class _SignInViewState extends State<SignInView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: emailFocus ? Colors.pink : Colors.grey.shade800,
+                    color: emailFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -100,7 +100,7 @@ class _SignInViewState extends State<SignInView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: passwordFocus ? Colors.pink : Colors.grey.shade800,
+                    color: passwordFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
