@@ -15,12 +15,10 @@ class EventCard extends StatelessWidget {
     required this.onPressed,
   }) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
     DateTime fecha = DateTime.parse(event.startDate.toString());
-    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
+    String fechaFormateada = DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
     return InkWell(
       onTap: onPressed,
       child: Container(
@@ -58,7 +56,7 @@ class EventCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      event.subtitle,
+                      '${event.requestEvent!.requestedByName} ${event.requestEvent!.requestedByLastName}',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.white,

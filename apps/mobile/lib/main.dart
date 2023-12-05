@@ -4,9 +4,11 @@ import 'package:eventvalle/views/login.dart';
 import 'package:eventvalle/views/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', '');
   runApp(const MyApp());
 }
 
@@ -39,7 +41,7 @@ class AppRouter extends StatelessWidget {
       } else if (state is AuthRegisterNewUser) {
         return RegisterView();
       } else {
-        return SignInView(); 
+        return SignInView();
       }
     });
 

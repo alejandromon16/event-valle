@@ -1,3 +1,4 @@
+import 'request_event.dart';
 enum EventStatus {
   DRAFT,
   PUBLISH,
@@ -24,6 +25,7 @@ class EventEntity {
   bool isLiked;
   bool isSaved;
   int? amountOfLikes;
+  RequestEvent? requestEvent;
 
   EventEntity({
     required this.address,
@@ -46,6 +48,7 @@ class EventEntity {
     required this.isLiked,
     required this.isSaved,
     required this.amountOfLikes,
+    required this.requestEvent,
   });
 
   factory EventEntity.fromJson(Map<String, dynamic> json) {
@@ -70,6 +73,9 @@ class EventEntity {
       isLiked: json['isLiked'] ?? false,
       isSaved: json['isSaved'] ?? false,
       amountOfLikes: json['amountOfLikes'],
+      requestEvent: json['requestEvent'] != null
+          ? RequestEvent.fromJson(json['requestEvent'])
+          : null,
     );
   }
 
@@ -91,6 +97,7 @@ class EventEntity {
       'isLiked': isLiked,
       'isSaved': isSaved,
       'amountOfLikes' : amountOfLikes,
+      'requestEvent': requestEvent,
     };
     if (endDate != null) data['endDate'] = endDate!.toIso8601String();
     if (latitud != null) data['latitud'] = latitud;

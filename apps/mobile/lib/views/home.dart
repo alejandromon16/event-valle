@@ -132,7 +132,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No events available for this week.');
+            return Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://static.vecteezy.com/system/resources/previews/012/181/008/original/document-data-file-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-etc-vector.jpg',
+                    width:
+                        300,
+                    height:
+                        300,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'No hay eventos disponibles para esta semana.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           } else {
             // Update the _events variable
             _events = snapshot.data!;

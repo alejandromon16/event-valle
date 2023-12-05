@@ -25,7 +25,7 @@ class AnimatedDetailHeader extends StatelessWidget {
       ? event.principalImage : "https://img.freepik.com/fotos-premium/fondo-negro-oscuro-estudio-fotografico-presentacion-producto-imagen-generada-ia_532963-7621.jpg?w=2000",];
     final topPadding = MediaQuery.of(context).padding.top;
     DateTime fecha = DateTime.parse(event.startDate.toString());
-    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
+    String fechaFormateada = DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
 
     return Stack(
       fit: StackFit.expand,
@@ -199,7 +199,7 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  event.title,
+                  '${event.requestEvent!.requestedByName} ${event.requestEvent!.requestedByLastName}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,

@@ -97,218 +97,232 @@ class _ProfileViewState extends State<ProfileView>
           ),
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/logo1.png',
-              height: 190,
-              width: 230,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: EdgeInsets.all(18),
-              child: Text(
-                userEntity != null
-                    ? userEntity.email
-                    : 'Información del usuario no disponible',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/logo1.png',
+                height: 190,
+                width: 230,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color: nameFocus ? Colors.pink : Colors.grey.shade800,
+              SizedBox(
+                height: 20,
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: EdgeInsets.all(18),
+                child: Text(
+                  userEntity != null
+                      ? userEntity.email
+                      : 'Información del usuario no disponible',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person, color: Colors.grey.shade800),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: TextField(
-                        controller: nameController,
-                        focusNode: nameFocusNode,
-                        decoration: InputDecoration(
-                          hintText: userEntity?.name ?? 'Nombre',
-                          border: InputBorder.none,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(
+                      color: nameFocus ? Colors.pink : Colors.grey.shade800,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.person, color: Colors.grey.shade800),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: TextField(
+                          controller: nameController,
+                          focusNode: nameFocusNode,
+                          decoration: InputDecoration(
+                            hintText: userEntity?.name ?? 'Nombre',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color: lastNameFocus ? Colors.pink : Colors.grey.shade800,
+                    ],
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person, color: Colors.grey.shade800),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: TextField(
-                        controller: lastNameController,
-                        focusNode: lastNameFocusNode,
-                        decoration: InputDecoration(
-                          hintText: userEntity?.last_name ?? 'Apellido',
-                          border: InputBorder.none,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(
+                      color: lastNameFocus ? Colors.pink : Colors.grey.shade800,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.person_outline, color: Colors.grey.shade800),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: TextField(
+                          controller: lastNameController,
+                          focusNode: lastNameFocusNode,
+                          decoration: InputDecoration(
+                            hintText: userEntity?.last_name ?? 'Apellido',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color: userNameFocus ? Colors.pink : Colors.grey.shade800,
+                    ],
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person, color: Colors.grey.shade800),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: TextField(
-                        controller: userNameController,
-                        focusNode: userNameFocusNode,
-                        decoration: InputDecoration(
-                          hintText: userEntity?.user_name ?? 'Username',
-                          border: InputBorder.none,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(
+                      color: userNameFocus ? Colors.pink : Colors.grey.shade800,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.card_membership, color: Colors.grey.shade800),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: TextField(
+                          controller: userNameController,
+                          focusNode: userNameFocusNode,
+                          decoration: InputDecoration(
+                            hintText: userEntity?.user_name ?? 'Username',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(
-                    color:
-                        phoneNumberFocus ? Colors.pink : Colors.grey.shade800,
+                    ],
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person, color: Colors.grey.shade800),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: TextField(
-                        controller: phoneNumberController,
-                        focusNode: phoneNumberFocusNode,
-                        decoration: InputDecoration(
-                          hintText:
-                              userEntity?.phone_number ?? 'Numero de telefono',
-                          border: InputBorder.none,
+              ),
+              Padding(
+                padding:
+                    EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(
+                      color:
+                          phoneNumberFocus ? Colors.pink : Colors.grey.shade800,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone, color: Colors.grey.shade800),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: TextField(
+                          controller: phoneNumberController,
+                          focusNode: phoneNumberFocusNode,
+                          decoration: InputDecoration(
+                            hintText: userEntity?.phone_number ??
+                                'Numero de telefono',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Text(mensaje, style: TextStyle(color: Colors.red)),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final updatedUser = await AuthService().updateUser(
-                      userEntity!.id,
-                      nameController.text,
-                      lastNameController.text,
-                      userNameController.text,
-                      phoneNumberController.text,
-                    );
+              Text(mensaje, style: TextStyle(color: Colors.red)),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      if (nameController.text.isEmpty &&
+                          lastNameController.text.isEmpty &&
+                          userNameController.text.isEmpty &&
+                          phoneNumberController.text.isEmpty) {
+                        setState(() {
+                          mensaje = "Por favor completa al menos un campo";
+                        });
+                        return;
+                      }
+                      final updatedUser = await AuthService().updateUser(
+                        userEntity!.id,
+                        nameController.text.isNotEmpty
+                            ? nameController.text
+                            : userEntity?.name ?? '',
+                        lastNameController.text.isNotEmpty
+                            ? lastNameController.text
+                            : userEntity?.last_name ?? '',
+                        userNameController.text.isNotEmpty
+                            ? userNameController.text
+                            : userEntity?.user_name ?? '',
+                        phoneNumberController.text.isNotEmpty
+                            ? phoneNumberController.text
+                            : userEntity?.phone_number ?? '',
+                      );
 
-                    if (updatedUser != null) {
-                      setState(() {
-                        userEntity = singleton.userEntity;
-                        nameController.text = userEntity?.name ?? '';
-                        lastNameController.text = userEntity?.last_name ?? '';
-                        userNameController.text = userEntity?.user_name ?? '';
-                        phoneNumberController.text =
-                            userEntity?.phone_number ?? '';
-                        mensaje = "Usuario actualizado correctamente";
-                      });
-                    } else {
-                      setState(() {
-                        mensaje = "Error al actualizar el usaurio";
-                      });
-                    }
-                  },
-                  icon: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    'Editar Perfil',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF993366),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Color(0xFF993366)),
+                      if (updatedUser != null) {
+                        setState(() {
+                          userEntity = singleton.userEntity;
+                          mensaje = "Usuario actualizado correctamente";
+                        });
+                      } else {
+                        setState(() {
+                          mensaje = "Error al actualizar el usuario";
+                        });
+                      }
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(15),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(AuthSignOut());
-                  },
-                  icon: Icon(
-                    Icons.logout,
-                    color: Colors.black,
-                  ),
-                  label: Text(
-                    'Cerrar sesión',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.pink),
+                    label: Text(
+                      'Editar Perfil',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    padding: EdgeInsets.all(15),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF993366),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: Color(0xFF993366)),
+                      ),
+                      padding: EdgeInsets.all(15),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(AuthSignOut());
+                    },
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      'Cerrar sesión',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: Colors.pink),
+                      ),
+                      padding: EdgeInsets.all(15),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

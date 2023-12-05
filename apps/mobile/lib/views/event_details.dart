@@ -25,6 +25,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
   final EventEntity event;
   final EventService _eventService = EventService();
   final Singleton singleton = Singleton();
+  final List<String> tags = ['Tecnologia', 'Empresarial', 'Salud', 'Gastronomia', 'Urbanismo'];
+
 
   _EventDetailsViewState({required this.event});
 
@@ -101,7 +103,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       spacing: 10,
                       runSpacing: 10,
                       children: List.generate(
-                        event.tags.length,
+                        tags.length,
                         (index) => Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
@@ -109,7 +111,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                             color: Colors.black12,
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          child: Text(event.tags[index]),
+                          child: Text(tags[index]),
                         ),
                       ),
                     )
@@ -174,7 +176,7 @@ class EventTopInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime fecha = DateTime.parse(event.startDate.toString());
-    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
+    String fechaFormateada = DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(

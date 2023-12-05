@@ -32,6 +32,12 @@ class EventService {
               tags
               title
               updatedAt
+              requestEvent {
+                requestedBy {
+                  name
+                  last_name
+                }
+              }
             }
           }
         '''),
@@ -207,6 +213,12 @@ class EventService {
           tags
           title
           updatedAt
+          requestEvent {
+            requestedBy {
+              name
+              last_name
+            }
+          }
         }
       }
     '''),

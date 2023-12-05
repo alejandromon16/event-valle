@@ -112,10 +112,14 @@ class _SavedEventsViewState extends State<SavedEventsView>
       ),
       body: FutureBuilder<List<EventEntity>>(
         future: !_isSearching
-            ? Future.delayed(Duration(seconds: 1),
-                () => _eventService.getListOfSavedEvents(singleton.userId.toString()))
-            : Future.delayed(Duration(milliseconds: 200),
-                () => _eventService.getListOfSavedEvents(singleton.userId.toString())),
+            ? Future.delayed(
+                Duration(seconds: 1),
+                () => _eventService
+                    .getListOfSavedEvents(singleton.userId.toString()))
+            : Future.delayed(
+                Duration(milliseconds: 200),
+                () => _eventService
+                    .getListOfSavedEvents(singleton.userId.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             //skeleton aqui
@@ -135,9 +139,32 @@ class _SavedEventsViewState extends State<SavedEventsView>
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('Currently, you don\'t have any events marked as favorites.');
+            return Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://static.vecteezy.com/system/resources/previews/012/181/008/original/document-data-file-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-etc-vector.jpg',
+                    width:
+                        300,
+                    height:
+                        300,
+                  ),
+                  SizedBox(height: 10), // Espacio entre la imagen y el texto
+                  Text(
+                    'Actualmente, no tienes ningún evento marcado como favorito.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           } else {
-            // Update the _events variable
             _events = snapshot.data!;
 
             List<EventEntity> displayEvents =
