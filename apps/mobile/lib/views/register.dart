@@ -80,7 +80,8 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+        body: SingleChildScrollView(
+      child: Container(
         color: const Color.fromARGB(255, 250, 250, 250),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -370,6 +371,6 @@ class _RegisterViewState extends State<RegisterView> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

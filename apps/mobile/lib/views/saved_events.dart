@@ -6,21 +6,24 @@ import 'package:eventvalle/services/event_service.dart';
 import 'package:eventvalle/views/event_details.dart';
 import 'package:eventvalle/widgets/EventCard.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class SavedEventsView extends StatefulWidget {
+  const SavedEventsView({Key? key}) : super(key: key);
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _SavedEventsViewState createState() => _SavedEventsViewState();
 }
 
-class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
+class _SavedEventsViewState extends State<SavedEventsView>
+    with TickerProviderStateMixin {
   final EventService _eventService = EventService();
   bool _isSearching = false;
   late TextEditingController _searchController;
   late AnimationController _slideAnimation;
   List<EventEntity> _filteredEvents = [];
   List<EventEntity> _events = [];
-  final Singleton singleton = Singleton();
+  final singleton = Singleton();
+
+  _SavedEventsViewState();
 
   @override
   void initState() {
@@ -110,9 +113,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       body: FutureBuilder<List<EventEntity>>(
         future: !_isSearching
             ? Future.delayed(Duration(seconds: 1),
-                () => _eventService.getListOfEventsForThisWeek(singleton.userId.toString()))
+                () => _eventService.getListOfSavedEvents(singleton.userId.toString()))
             : Future.delayed(Duration(milliseconds: 200),
-                () => _eventService.getListOfEventsForThisWeek(singleton.userId.toString())),
+                () => _eventService.getListOfSavedEvents(singleton.userId.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             //skeleton aqui
@@ -132,7 +135,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No events available for this week.');
+            return Text('Currently, you don\'t have any events marked as favorites.');
           } else {
             // Update the _events variable
             _events = snapshot.data!;

@@ -5,7 +5,6 @@ import 'package:eventvalle/views/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -13,7 +12,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +35,11 @@ class AppRouter extends StatelessWidget {
         return SignInView();
       } else if (state is AuthAuthenticated ||
           state is AuthRegisterUserSuccess) {
-        // You can navigate to the main app screen or other authenticated screens here.
         return AppView();
       } else if (state is AuthRegisterNewUser) {
         return RegisterView();
       } else {
-        return SignInView(); // Or any other initial screen.
+        return SignInView(); 
       }
     });
 

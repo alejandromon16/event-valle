@@ -1,16 +1,26 @@
+import 'package:eventvalle/Singleton/Singleton.dart';
 import 'package:eventvalle/data/models/event.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class EventCard extends StatelessWidget {
   final EventEntity event;
   final VoidCallback onPressed;
+  final userId = Singleton().userId;
+  List<EventEntity> savedEvents = [];
+  EventCard({
+    Key? key,
+    required this.event,
+    required this.onPressed,
+  }) : super(key: key);
 
-  EventCard({Key? key, required this.event, required this.onPressed})
-      : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
-    print(event.principalImage);
+    DateTime fecha = DateTime.parse(event.startDate.toString());
+    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
     return InkWell(
       onTap: onPressed,
       child: Container(
@@ -21,7 +31,7 @@ class EventCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: event.principalImage.isNotEmpty
               ? null
-              : Colors.black,
+              : Color.fromARGB(190, 0, 0, 0),
           image: event.principalImage.isNotEmpty
               ? DecorationImage(
                   image: NetworkImage(event.principalImage),
@@ -48,14 +58,14 @@ class EventCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Alejandro Montero',
+                      event.subtitle,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
                     Text(
-                      'Publicado 10/11/2023 8:00 PM',
+                      fechaFormateada,
                       style: TextStyle(
                         fontWeight: FontWeight.w300,
                         color: Colors.white70,
@@ -64,12 +74,6 @@ class EventCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.turned_in_not,
-                      color: Colors.white,
-                    )),
               ],
             ),
             const Spacer(),
@@ -96,7 +100,7 @@ class EventCard extends StatelessWidget {
                 backgroundBlendMode: BlendMode.colorBurn,
               ),
               child: Text(
-                'Jueves, 16 de noviembre, a las 10:00 ',
+                fechaFormateada,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.white,

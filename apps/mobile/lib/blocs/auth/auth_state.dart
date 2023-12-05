@@ -42,12 +42,11 @@ class AuthRegisterNewUser extends AuthState {
 }
 
 class AuthRegisterUserSuccess extends AuthState {
-  final UserEntity user;
-
-  const AuthRegisterUserSuccess(this.user);
+  final String userId ;
+  const AuthRegisterUserSuccess({required this.userId});
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [userId];
 }
 
 class AuthRegisterUserFailure extends AuthState {

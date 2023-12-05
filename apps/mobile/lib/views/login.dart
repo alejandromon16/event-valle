@@ -43,7 +43,8 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+        body: SingleChildScrollView(
+      child: Container(
         color: const Color.fromARGB(255, 250, 250, 250),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -51,6 +52,7 @@ class _SignInViewState extends State<SignInView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 28),
               Center(
                 child: Image.asset(
                   'assets/logo1.png',
@@ -58,7 +60,7 @@ class _SignInViewState extends State<SignInView> {
                   width: 230,
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 140.0),
               const Text(
                 'Iniciar Sesión',
                 style: TextStyle(
@@ -177,6 +179,6 @@ class _SignInViewState extends State<SignInView> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

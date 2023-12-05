@@ -21,6 +21,9 @@ class EventEntity {
   List<String> tags;
   String title;
   String updatedAt;
+  bool isLiked;
+  bool isSaved;
+  int? amountOfLikes;
 
   EventEntity({
     required this.address,
@@ -40,6 +43,9 @@ class EventEntity {
     required this.tags,
     required this.title,
     required this.updatedAt,
+    required this.isLiked,
+    required this.isSaved,
+    required this.amountOfLikes,
   });
 
   factory EventEntity.fromJson(Map<String, dynamic> json) {
@@ -61,6 +67,9 @@ class EventEntity {
       tags: List<String>.from(json['tags']),
       title: json['title'],
       updatedAt: json['updatedAt'],
+      isLiked: json['isLiked'] ?? false,
+      isSaved: json['isSaved'] ?? false,
+      amountOfLikes: json['amountOfLikes'],
     );
   }
 
@@ -79,6 +88,9 @@ class EventEntity {
       'tags': tags,
       'title': title,
       'updatedAt': updatedAt,
+      'isLiked': isLiked,
+      'isSaved': isSaved,
+      'amountOfLikes' : amountOfLikes,
     };
     if (endDate != null) data['endDate'] = endDate!.toIso8601String();
     if (latitud != null) data['latitud'] = latitud;

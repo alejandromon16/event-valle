@@ -1,8 +1,8 @@
 import 'package:eventvalle/views/home.dart';
 import 'package:eventvalle/views/profile.dart';
+import 'package:eventvalle/views/saved_events.dart';
 import 'package:eventvalle/widgets/BottomNavBar.dart';
 import 'package:flutter/material.dart';
-
 
 class AppView extends StatefulWidget {
   const AppView({Key? key}) : super(key: key);
@@ -12,41 +12,43 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
+  late int _currentIndex;
+  late List<Widget> _screens;
 
- int _currentIndex = 0;
- final List<Widget> _screens = [
-    HomeView(),
-    HomeView(),
-    ProfileView(),
-  ];
+  _AppViewState() {
+    _currentIndex = 0;
+    _screens = [
+      HomeView(),
+      SavedEventsView(),
+      ProfileView(),
+    ];
+  }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-            switch (_currentIndex) {
-              case 0:
-                print('Elemento seleccionado: Inicio');
-                // Aquí puedes realizar acciones específicas para "Inicio"
-                break;
-              case 1:
-                print('Elemento seleccionado: Favoritos');
-                // Aquí puedes realizar acciones específicas para "Favoritos"
-                break;
-              case 2:
-                print('Elemento seleccionado: Perfil');
-                // Aquí puedes realizar acciones específicas para "Perfil"
-                break;
-            }
-          });
-        },
-      )
-    );
+        body: _screens[_currentIndex],
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+              switch (_currentIndex) {
+                case 0:
+                  print('Elemento seleccionado: Inicio');
+                  // Aquí puedes realizar acciones específicas para "Inicio"
+                  break;
+                case 1:
+                  print('Elemento seleccionado: Favoritos');
+                  // Aquí puedes realizar acciones específicas para "Favoritos"
+                  break;
+                case 2:
+                  print('Elemento seleccionado: Perfil');
+                  // Aquí puedes realizar acciones específicas para "Perfil"
+                  break;
+              }
+            });
+          },
+        ));
   }
 }
-

@@ -1,8 +1,12 @@
+import 'package:eventvalle/Singleton/Singleton.dart';
 import 'package:eventvalle/blocs/auth/auth_bloc.dart';
+import 'package:eventvalle/data/models/user.dart';
+import 'package:eventvalle/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileView extends StatefulWidget {
+  const ProfileView({Key? key}) : super(key: key);
   @override
   _ProfileViewState createState() => _ProfileViewState();
 }
@@ -10,6 +14,29 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>
     with TickerProviderStateMixin {
   late AnimationController _slideAnimation;
+  final Singleton singleton = Singleton();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  FocusNode userNameFocusNode = FocusNode();
+  FocusNode phoneNumberFocusNode = FocusNode();
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode lastNameFocusNode = FocusNode();
+  bool userNameFocus = false;
+  bool phoneNumberFocus = false;
+  bool nameFocus = false;
+  bool lastNameFocus = false;
+  String mensaje = "";
+
+  @override
+  void dispose() {
+    userNameFocusNode.dispose();
+    phoneNumberFocusNode.dispose();
+    nameFocusNode.dispose();
+    lastNameFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -18,10 +45,31 @@ class _ProfileViewState extends State<ProfileView>
       duration: Duration(milliseconds: 300),
       vsync: this,
     );
+    userNameFocusNode.addListener(() {
+      setState(() {
+        userNameFocus = userNameFocusNode.hasFocus;
+      });
+    });
+    phoneNumberFocusNode.addListener(() {
+      setState(() {
+        phoneNumberFocus = phoneNumberFocusNode.hasFocus;
+      });
+    });
+    nameFocusNode.addListener(() {
+      setState(() {
+        nameFocus = nameFocusNode.hasFocus;
+      });
+    });
+    lastNameFocusNode.addListener(() {
+      setState(() {
+        lastNameFocus = lastNameFocusNode.hasFocus;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    UserEntity? userEntity = singleton.userEntity;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -53,90 +101,213 @@ class _ProfileViewState extends State<ProfileView>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(
-                    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            Image.asset(
+              'assets/logo1.png',
+              height: 190,
+              width: 230,
             ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      '350',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'Seguidores',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Column(
-                  children: [
-                    Text(
-                      '340',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'Siguiendo',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
             SizedBox(
               height: 20,
             ),
-            Text(
-              'Sobre mi',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
+            const SizedBox(height: 16.0),
             Padding(
               padding: EdgeInsets.all(18),
               child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                textAlign: TextAlign.left,
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                // Lógica para editar el perfil
-                context.read<AuthBloc>().add(AuthSignOut());
-              },
-              icon: Icon(
-                Icons.logout,
-                color: Colors.black,
-              ),
-              label: Text(
-                'Cerrar session',
-                style: TextStyle(color: Colors.black),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: BorderSide(color: Colors.pink),
+                userEntity != null
+                    ? userEntity.email
+                    : 'Información del usuario no disponible',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
                 ),
-                padding: EdgeInsets.all(15),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: nameFocus ? Colors.pink : Colors.grey.shade800,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Colors.grey.shade800),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: TextField(
+                        controller: nameController,
+                        focusNode: nameFocusNode,
+                        decoration: InputDecoration(
+                          hintText: userEntity?.name ?? 'Nombre',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: lastNameFocus ? Colors.pink : Colors.grey.shade800,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Colors.grey.shade800),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: TextField(
+                        controller: lastNameController,
+                        focusNode: lastNameFocusNode,
+                        decoration: InputDecoration(
+                          hintText: userEntity?.last_name ?? 'Apellido',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: userNameFocus ? Colors.pink : Colors.grey.shade800,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Colors.grey.shade800),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: TextField(
+                        controller: userNameController,
+                        focusNode: userNameFocusNode,
+                        decoration: InputDecoration(
+                          hintText: userEntity?.user_name ?? 'Username',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color:
+                        phoneNumberFocus ? Colors.pink : Colors.grey.shade800,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Colors.grey.shade800),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: TextField(
+                        controller: phoneNumberController,
+                        focusNode: phoneNumberFocusNode,
+                        decoration: InputDecoration(
+                          hintText:
+                              userEntity?.phone_number ?? 'Numero de telefono',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Text(mensaje, style: TextStyle(color: Colors.red)),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final updatedUser = await AuthService().updateUser(
+                      userEntity!.id,
+                      nameController.text,
+                      lastNameController.text,
+                      userNameController.text,
+                      phoneNumberController.text,
+                    );
 
+                    if (updatedUser != null) {
+                      setState(() {
+                        userEntity = singleton.userEntity;
+                        nameController.text = userEntity?.name ?? '';
+                        lastNameController.text = userEntity?.last_name ?? '';
+                        userNameController.text = userEntity?.user_name ?? '';
+                        phoneNumberController.text =
+                            userEntity?.phone_number ?? '';
+                        mensaje = "Usuario actualizado correctamente";
+                      });
+                    } else {
+                      setState(() {
+                        mensaje = "Error al actualizar el usaurio";
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    'Editar Perfil',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF993366),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Color(0xFF993366)),
+                    ),
+                    padding: EdgeInsets.all(15),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(AuthSignOut());
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                  ),
+                  label: Text(
+                    'Cerrar sesión',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Colors.pink),
+                    ),
+                    padding: EdgeInsets.all(15),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

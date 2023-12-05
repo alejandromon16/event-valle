@@ -1,14 +1,19 @@
+import 'package:eventvalle/Singleton/Singleton.dart';
 import 'package:eventvalle/data/models/event.dart';
+import 'package:eventvalle/services/event_service.dart';
 import 'package:eventvalle/widgets/AnimatedDetailHeader.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'package:intl/intl.dart';
 
 class EventDetailsView extends StatefulWidget {
   final EventEntity event;
   final double screenHeight;
 
-  const EventDetailsView(
-      {Key? key, required this.event, required this.screenHeight});
+  const EventDetailsView({
+    Key? key,
+    required this.event,
+    required this.screenHeight,
+  });
 
   @override
   State<EventDetailsView> createState() => _EventDetailsViewState(event: event);
@@ -17,8 +22,9 @@ class EventDetailsView extends StatefulWidget {
 class _EventDetailsViewState extends State<EventDetailsView> {
   late ScrollController _controller;
   bool favorite = false;
-  bool asistire = false;
   final EventEntity event;
+  final EventService _eventService = EventService();
+  final Singleton singleton = Singleton();
 
   _EventDetailsViewState({required this.event});
 
@@ -27,17 +33,17 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     _controller =
         ScrollController(initialScrollOffset: widget.screenHeight * .3);
     super.initState();
+    favorite = event.isLiked;
   }
 
   void toggle_favorite() {
+    if (event.isLiked) {
+      _eventService.removeLike(event.id, singleton.userId.toString());
+    } else if (!event.isSaved) {
+      _eventService.addLike(event.id, singleton.userId.toString());
+    }
     setState(() {
       favorite = !favorite;
-    });
-  }
-
-  void toggle_asistire() {
-    setState(() {
-      asistire = !asistire;
     });
   }
 
@@ -94,48 +100,18 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
-                      children: [
-                        Container(
+                      children: List.generate(
+                        event.tags.length,
+                        (index) => Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text('Tecnologia'),
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(event.tags[index]),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text('Tecnologia'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text('Tecnologia'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text('Tecnologia'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text('Tecnologia'),
-                        ),
-                      ],
+                      ),
                     )
                   ],
                 ),
@@ -161,38 +137,6 @@ class _EventDetailsViewState extends State<EventDetailsView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: asistire ? Colors.white : Colors.pink),
-                      color: asistire ? Colors.pink : Colors.white,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        toggle_asistire();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.handshake,
-                                color: asistire ? Colors.white : Colors.pink),
-                            onPressed: () {
-                              toggle_asistire();
-                            },
-                          ),
-                          Text(
-                            'Asistire',
-                            style: TextStyle(
-                                color: asistire ? Colors.white : Colors.pink),
-                          ),
-                          SizedBox(width: 5)
-                        ],
-                      ),
-                    )),
                 Container(
                     margin: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
@@ -229,6 +173,8 @@ class EventTopInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime fecha = DateTime.parse(event.startDate.toString());
+    String fechaFormateada = DateFormat.yMMMMEEEEd().add_jm().format(fecha);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -278,17 +224,12 @@ class EventTopInfo extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 6),
                   Text(
-                    event.startDate.toIso8601String(),
+                    fechaFormateada,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  SizedBox(height: 3),
-                  Text(
-                    event.endDate.toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400, color: Colors.black45),
                   ),
                 ],
               )

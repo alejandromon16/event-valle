@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:eventvalle/Singleton/Singleton.dart';
 import 'package:eventvalle/data/models/user.dart';
 import 'package:eventvalle/services/auth_service.dart';
 
@@ -8,7 +9,6 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService = AuthService();
-  late String _requesterId;
 
   AuthBloc() : super(AuthInitial()) {
     on<AuthCheckRequested>(onAuthCheckRequested);
@@ -33,32 +33,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void onSignInWithEmailPassword(
-    AuthSignInWithEmailPassword event, Emitter<AuthState> emit) async {
-  try {
-    print(event.email);
-    UserEntity? user = await _authService.signInWithEmailPassword(
-        event.email, event.password);
+      AuthSignInWithEmailPassword event, Emitter<AuthState> emit) async {
+    final singleton = Singleton();
+    try {
+      print(event.email);
+      UserEntity? user = await _authService.signInWithEmailPassword(
+          event.email, event.password);
 
-    if (user != null) {
-      print('succes login suc ${user.name}');
-      _requesterId = user.id;
-      emit(AuthAuthenticated(userId: user.id));
-    } else {
-      print('error');
-      emit(AuthUnauthenticated());
-      emit(AuthInvalidCredentials());
+      if (user != null) {
+        print('succes login suc ${user.name}');
+        emit(AuthAuthenticated(userId: user.id));
+        singleton.setUserId(user.id);
+        singleton.setUserEntity(user);
+      } else {
+        print('error');
+        emit(AuthUnauthenticated());
+        emit(AuthInvalidCredentials());
+      }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
     }
-  } catch (e) {
-    emit(AuthError(message: e.toString()));
   }
-}
-
 
   void onSignOut(AuthSignOut event, Emitter<AuthState> emit) async {
+    final singleton = Singleton();
+    singleton.logout();
     emit(AuthUnauthenticated());
   }
 
   void onRegisterUser(AuthRegisterUser event, Emitter<AuthState> emit) async {
+    final singleton = Singleton();
     try {
       UserEntity? user = await _authService.registerUser(
         event.email,
@@ -70,8 +74,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (user != null) {
-        emit(AuthRegisterUserSuccess(user));
+        emit(AuthRegisterUserSuccess(userId: user.id));
         emit(AuthAuthenticated(userId: user.id));
+        singleton.setUserId(user.id);
+        singleton.setUserEntity(user);
       } else {
         emit(AuthRegisterUserFailure('Error registering user'));
       }
