@@ -110,7 +110,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: emailFocus ? Colors.pink : Colors.grey.shade800,
+                    color: emailFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -136,7 +136,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: usernameFocus ? Colors.pink : Colors.grey.shade800,
+                    color: usernameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -162,7 +162,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: nameFocus ? Colors.pink : Colors.grey.shade800,
+                    color: nameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -188,7 +188,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: lastnameFocus ? Colors.pink : Colors.grey.shade800,
+                    color: lastnameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -215,7 +215,7 @@ class _RegisterViewState extends State<RegisterView> {
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
                     color:
-                        phoneNumberFocus ? Colors.pink : Colors.grey.shade800,
+                        phoneNumberFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -241,7 +241,7 @@ class _RegisterViewState extends State<RegisterView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: passwordFocus ? Colors.pink : Colors.grey.shade800,
+                    color: passwordFocus ? Color(0xFF993366) : Colors.grey.shade800,
                   ),
                 ),
                 child: Row(
@@ -269,7 +269,7 @@ class _RegisterViewState extends State<RegisterView> {
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
                     color: passwordRepeatFocus
-                        ? Colors.pink
+                        ? Color(0xFF993366)
                         : Colors.grey.shade800,
                   ),
                 ),

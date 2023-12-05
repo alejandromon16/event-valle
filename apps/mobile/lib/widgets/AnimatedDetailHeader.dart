@@ -21,12 +21,18 @@ class AnimatedDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> images = [event.principalImage.isNotEmpty
-      ? event.principalImage : "https://img.freepik.com/fotos-premium/fondo-negro-oscuro-estudio-fotografico-presentacion-producto-imagen-generada-ia_532963-7621.jpg?w=2000",];
+    final List<String> images = [
+      event.principalImage.isNotEmpty
+          ? event.principalImage
+          : "https://img.freepik.com/fotos-premium/fondo-negro-oscuro-estudio-fotografico-presentacion-producto-imagen-generada-ia_532963-7621.jpg?w=2000",
+    ];
+    final List<String> images1 = event.images;
+
     final topPadding = MediaQuery.of(context).padding.top;
     DateTime fecha = DateTime.parse(event.startDate.toString());
-    String fechaFormateada = DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
-
+    String fechaFormateada =
+        DateFormat.yMMMMEEEEd('es_ES').add_jm().format(fecha);
+    images.addAll(images1);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -197,7 +203,7 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 Text(
                   '${event.requestEvent!.requestedByName} ${event.requestEvent!.requestedByLastName}',
                   style: TextStyle(
@@ -231,7 +237,7 @@ class _LikesContainer extends StatelessWidget {
       height: 140,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-          color: Colors.pink,
+          color: Color(0xFF993366),
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(30),
           )),

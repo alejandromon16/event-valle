@@ -144,20 +144,20 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(50)),
                       border: Border.all(
-                          color: favorite ? Colors.white : Colors.pink),
-                      color: favorite ? Colors.pink : Colors.white,
+                          color: favorite ? Colors.white : Color(0xFF993366)),
+                      color: favorite ? Color(0xFF993366) : Colors.white,
                     ),
                     child: IconButton(
                       onPressed: () {
                         toggle_favorite();
                       },
                       style: TextButton.styleFrom(
-                        primary: Colors.pink,
+                        primary: Color(0xFF993366),
                         shape: const StadiumBorder(),
                       ),
                       icon: Icon(
                         favorite ? Icons.favorite : Icons.favorite_border,
-                        color: favorite ? Colors.white : Colors.pink,
+                        color: favorite ? Colors.white : Color(0xFF993366),
                       ),
                     )),
               ],
@@ -189,7 +189,7 @@ class EventTopInfo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.pink.shade50,
                 ),
-                child: const Icon(Icons.location_on, color: Colors.pink),
+                child: const Icon(Icons.location_on, color: Color(0xFF993366)),
               ),
               SizedBox(width: 20),
               Column(
@@ -220,13 +220,13 @@ class EventTopInfo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.pink.shade50,
                 ),
-                child: const Icon(Icons.calendar_month, color: Colors.pink),
+                child: const Icon(Icons.calendar_month, color: Color(0xFF993366)),
               ),
               SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 6),
+                  SizedBox(height: 4),
                   Text(
                     fechaFormateada,
                     style: TextStyle(

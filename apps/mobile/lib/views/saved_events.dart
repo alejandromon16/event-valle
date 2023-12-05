@@ -123,18 +123,20 @@ class _SavedEventsViewState extends State<SavedEventsView>
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             //skeleton aqui
-            return Column(
-              children: [
-                SizedBox(
-                  height: 300,
-                  child: EventCardSkeleton(),
-                ),
-                SizedBox(height: 16),
-                SizedBox(
-                  height: 300,
-                  child: EventCardSkeleton(),
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: EventCardSkeleton(),
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    height: 300,
+                    child: EventCardSkeleton(),
+                  ),
+                ],
+              ),
             );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -146,21 +148,21 @@ class _SavedEventsViewState extends State<SavedEventsView>
                 children: [
                   Image.network(
                     'https://static.vecteezy.com/system/resources/previews/012/181/008/original/document-data-file-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-etc-vector.jpg',
-                    width:
-                        300,
-                    height:
-                        300,
+                    width: 300,
+                    height: 300,
                   ),
                   SizedBox(height: 10), // Espacio entre la imagen y el texto
-                  Text(
-                    'Actualmente, no tienes ningún evento marcado como favorito.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Text(
+                        'Actualmente, no tienes ningún evento marcado como favorito.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
                 ],
               ),
             );

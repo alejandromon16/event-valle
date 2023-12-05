@@ -130,7 +130,7 @@ class _ProfileViewState extends State<ProfileView>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(
-                      color: nameFocus ? Colors.pink : Colors.grey.shade800,
+                      color: nameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                     ),
                   ),
                   child: Row(
@@ -158,7 +158,7 @@ class _ProfileViewState extends State<ProfileView>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(
-                      color: lastNameFocus ? Colors.pink : Colors.grey.shade800,
+                      color: lastNameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                     ),
                   ),
                   child: Row(
@@ -186,7 +186,7 @@ class _ProfileViewState extends State<ProfileView>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(
-                      color: userNameFocus ? Colors.pink : Colors.grey.shade800,
+                      color: userNameFocus ? Color(0xFF993366) : Colors.grey.shade800,
                     ),
                   ),
                   child: Row(
@@ -216,7 +216,7 @@ class _ProfileViewState extends State<ProfileView>
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(
                       color:
-                          phoneNumberFocus ? Colors.pink : Colors.grey.shade800,
+                          phoneNumberFocus ? Color(0xFF993366) : Colors.grey.shade800,
                     ),
                   ),
                   child: Row(
@@ -314,7 +314,7 @@ class _ProfileViewState extends State<ProfileView>
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.pink),
+                        side: BorderSide(color: Color(0xFF993366)),
                       ),
                       padding: EdgeInsets.all(15),
                     ),
